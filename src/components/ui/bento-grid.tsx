@@ -15,10 +15,12 @@ export interface BentoCardProps extends ComponentProps<"figure"> {
   className: string
   background?: ReactNode
   icon?: ReactNode
+  badge?: ReactNode
   description: string
   href: string
   target?: ComponentProps<"a">["target"]
   cta: string
+  ctaLabel?: string
 }
 
 const BentoGrid = ({ children, className, ...props }: BentoGridProps) => {
@@ -40,9 +42,11 @@ const BentoCard = ({
   className,
   background,
   icon,
+  badge,
   description,
   href,
   cta,
+  ctaLabel,
   target = "_blank",
   ...props
 }: BentoCardProps) => (
@@ -56,8 +60,9 @@ const BentoCard = ({
     {...props}
   >
     <div>{background}</div>
-    <figcaption className="pointer-events-none z-10 translate-y-full transform-gpu space-y-2 px-8 py-7 transition-all duration-300 group-hover:translate-y-0">
-      <div className="text-muted-foreground size-12 origin-left transform-gpu transition-all duration-300 ease-in-out group-hover:scale-75">
+    {badge && <div className="absolute top-4 right-4 z-10">{badge}</div>}
+    <figcaption className="pointer-events-none z-10 translate-y-full transform-gpu space-y-2 px-8 py-7 transition-all duration-300 group-focus-within:translate-y-0 group-hover:translate-y-0">
+      <div className="text-muted-foreground size-12 origin-left transform-gpu transition-all duration-300 ease-in-out group-focus-within:scale-75 group-hover:scale-75">
         {icon}
       </div>
       <Typography variant="h3">{name}</Typography>
@@ -67,10 +72,11 @@ const BentoCard = ({
       <Anchor
         href={href}
         target={target}
+        aria-label={ctaLabel}
         className="pointer-events-auto no-underline hover:underline md:text-xl"
       >
         {cta}
-        <ArrowRight className="ml-1 inline-block size-5" />
+        <ArrowRight aria-hidden className="ml-1 inline-block size-5" />
       </Anchor>
     </figcaption>
   </figure>

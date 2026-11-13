@@ -1,0 +1,2 @@
+# Prettier only supports MDX v1 and breaks MDX v2+ syntax such as {/* comments */}
+*.mdx

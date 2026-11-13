@@ -1,68 +1,44 @@
 ---
-import esquinaDelCodigo from "@/assets/projects/esquina-del-codigo.png"
-import pokerRankingWebsite from "@/assets/projects/poker-ranking-website.png"
-import preflopAiWebsite from "@/assets/projects/preflopai-website.png"
-import rateSpotAppIcon from "@/assets/projects/ratespot-app-icon.png"
-import rateSpotApp from "@/assets/projects/ratespot-app.png"
-import rivkaIcon from "@/assets/projects/rivka-icon.svg"
-import rivkaWebsite from "@/assets/projects/rivka-website.png"
-import { Image, Picture } from "astro:assets"
-import { BentoCard, type BentoCardProps, BentoGrid } from "../ui/bento-grid"
-import { Typography } from "../ui/typography"
 import { PROFILE } from "@/constants/profile"
+import { getProjectHref, getProjects } from "@/lib/projects"
+import { cn } from "@/lib/utils"
+import { Image, Picture } from "astro:assets"
+import { ArrowRight } from "lucide-react"
+import ProjectStatusBadge from "../projects/ProjectStatusBadge.astro"
+import { BentoCard, BentoGrid } from "../ui/bento-grid"
+import { buttonVariants } from "../ui/button"
+import { Typography } from "../ui/typography"
 
-const projects: (Omit<BentoCardProps, "icon" | "background"> & {
-  screenshot: ImageMetadata
-  icon?: ImageMetadata
-})[] = [
-  {
-    icon: rateSpotAppIcon,
-    screenshot: rateSpotApp,
-    name: "RateSpot (App & Website)",
-    description:
-      "A Mortgage Pricing Engine that helps users find listings, compare rates, and run complete mortgage scenarios.",
-    href: "https://www.ratespot.io",
-    cta: "Explore RateSpot",
-    className: "col-span-3 lg:col-span-2",
-  },
-  {
-    icon: rivkaIcon,
-    screenshot: rivkaWebsite,
-    name: "Rivka.io (Website)",
-    description:
-      "A website for Rivka.io, an enterprise software consulting company specializing in AI.",
-    href: "https://www.rivka.io",
-    cta: "Visit Rivka.io",
-    className: "col-span-3 lg:col-span-1",
-  },
-  {
-    screenshot: preflopAiWebsite,
-    name: "Preflop AI (Website)",
-    description:
-      "A website for Preflop AI, a mobile tool that provides preflop hand analysis and advice for poker players.",
-    href: "https://www.preflopai.com",
-    cta: "Meet Preflop AI",
-    className: "col-span-3 lg:col-span-1",
-  },
-  {
-    screenshot: pokerRankingWebsite,
-    name: "Poker Ranking (Website)",
-    description:
-      "A website for Poker Ranking, a tool for tournament organizers, clubs and casinos to manage player rankings and statistics.",
-    href: "https://www.pokerranking.io",
-    cta: "Discover Poker Ranking",
-    className: "col-span-3 lg:col-span-1",
-  },
-  {
-    screenshot: esquinaDelCodigo,
-    name: "La Esquina del Codigo (Blog)",
-    description:
-      "A personal blog where I share tutorials, tips, and tricks about web development, programming, and technology.",
-    href: "https://esquinadelcodigo.com",
-    cta: "Visit Blog",
-    className: "col-span-3 lg:col-span-1",
-  },
-]
+const projects = await getProjects({ featured: true })
+
+// Splits the cards into full 3-column rows, always leading with a wide card
+function getBentoSpans(count: number): number[] {
+  if (count === 0) return []
+  if (count === 1) return [3]
+  const rest = count - 2
+  const rows: number[][] = [[2, 1]]
+  let fullRows = Math.floor(rest / 3)
+  let pairRows = rest % 3 === 2 ? 1 : 0
+  if (rest % 3 === 1) {
+    if (fullRows > 0) {
+      fullRows -= 1
+      pairRows = 2
+    } else {
+      rows.push([3])
+    }
+  }
+  for (let i = 0; i < fullRows; i++) rows.push([1, 1, 1])
+  for (let i = 0; i < pairRows; i++)
+    rows.push(rows.length % 2 === 1 ? [1, 2] : [2, 1])
+  return rows.flat()
+}
+
+const SPAN_CLASSES: Record<number, string> = {
+  1: "col-span-3 lg:col-span-1",
+  2: "col-span-3 lg:col-span-2",
+  3: "col-span-3",
+}
+const spans = getBentoSpans(projects.length)
 ---
 
 <section class="container space-y-8">
@@ -77,19 +53,38 @@ const projects: (Omit<BentoCardProps, "icon" | "background"> & {
   </hgroup>
   <BentoGrid>
     {
-      projects.map(({ icon, screenshot, ...project }) => (
-        <BentoCard key={project.name} {...project}>
-          {icon ? (
-            <Image slot="icon" src={icon} alt={`${project.name} icon`} />
-          ) : null}
-          <Picture
-            slot="background"
-            src={screenshot}
-            alt={`${project.name} screenshot`}
-            class="absolute inset-0 size-full object-cover object-top [transition:opacity_0.15s_linear,object-position_10s_linear] group-hover:object-[center_bottom] group-hover:opacity-25 group-hover:blur-sm"
-          />
-        </BentoCard>
-      ))
+      projects.map((project, index) => {
+        const { name, category, summary, icon, cover, status } = project.data
+        const title = `${name} (${category})`
+        return (
+          <BentoCard
+            name={title}
+            description={summary}
+            href={getProjectHref(project)}
+            target="_self"
+            cta="Read the story"
+            ctaLabel={`Read the story of ${name}`}
+            className={SPAN_CLASSES[spans[index]]}
+          >
+            {icon ? <Image slot="icon" src={icon} alt="" /> : null}
+            {status !== "live" ? (
+              <ProjectStatusBadge slot="badge" status={status} />
+            ) : null}
+            <Picture
+              slot="background"
+              src={cover}
+              alt={`Screenshot of ${name}`}
+              class="absolute inset-0 size-full object-cover object-top [transition:opacity_0.15s_linear,object-position_10s_linear] group-focus-within:opacity-25 group-focus-within:blur-sm group-hover:object-[center_bottom] group-hover:opacity-25 group-hover:blur-sm"
+            />
+          </BentoCard>
+        )
+      })
     }
   </BentoGrid>
+  <div class="flex justify-center">
+    <a href="/projects" class={cn(buttonVariants({ variant: "outline" }))}>
+      View all projects
+      <ArrowRight aria-hidden className="size-5" />
+    </a>
+  </div>
 </section>

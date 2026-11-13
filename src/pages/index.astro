@@ -2,9 +2,9 @@
 import Contact from "@/components/home/Contact.astro"
 import Hero from "@/components/home/Hero.astro"
 import Showcase from "@/components/home/Showcase.astro"
-import { SAME_AS_LINKS } from "@/constants/links"
 import { PROFILE } from "@/constants/profile"
 import RootLayout from "@/layouts/RootLayout.astro"
+import { getPersonSchema } from "@/lib/structured-data"
 import type { ProfilePage, WithContext } from "schema-dts"
 
 const pageTitle = `${PROFILE.name} - ${PROFILE.title}`
@@ -16,21 +16,7 @@ const jsonLd: WithContext<ProfilePage> = {
   name: pageTitle,
   description: pageDescription,
   url: Astro.url.toString(),
-  mainEntity: {
-    "@type": "Person",
-    name: PROFILE.name,
-    alternateName: PROFILE.nickname,
-    jobTitle: PROFILE.title,
-    image: PROFILE.photo.src,
-    nationality: { "@type": "Country", name: PROFILE.country },
-    email: PROFILE.email,
-    telephone: PROFILE.phone,
-    url: PROFILE.website,
-    sameAs: SAME_AS_LINKS,
-    birthDate: PROFILE.birthDate,
-    gender: PROFILE.gender,
-    knowsLanguage: PROFILE.languages.map((language) => language.code),
-  },
+  mainEntity: getPersonSchema(Astro.site),
 }
 ---
 

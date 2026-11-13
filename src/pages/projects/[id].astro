@@ -1,0 +1,266 @@
+---
+import ContactButton from "@/components/ContactButton.astro"
+import ProjectStack from "@/components/projects/ProjectStack.astro"
+import ProjectStatusBadge from "@/components/projects/ProjectStatusBadge.astro"
+import { projectContentComponents } from "@/components/projects/project-content-components"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { buttonVariants } from "@/components/ui/button"
+import { Typography } from "@/components/ui/typography"
+import { PROFILE } from "@/constants/profile"
+import RootLayout from "@/layouts/RootLayout.astro"
+import {
+  formatProjectPeriod,
+  getProjectHref,
+  getProjects,
+  PROJECT_STATUS_LABELS,
+  type Project,
+} from "@/lib/projects"
+import { getBreadcrumbSchema, getPersonSchema } from "@/lib/structured-data"
+import type { GetStaticPaths } from "astro"
+import { getImage, Image } from "astro:assets"
+import { render } from "astro:content"
+import { Archive, ArrowUpRight } from "lucide-react"
+import type { CreativeWork, WithContext } from "schema-dts"
+
+export const getStaticPaths = (async () => {
+  const projects = await getProjects()
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }))
+}) satisfies GetStaticPaths
+
+interface Props {
+  project: Project
+}
+const { project } = Astro.props
+const { Content } = await render(project)
+const {
+  name,
+  category,
+  summary,
+  status,
+  role,
+  stack,
+  url,
+  archiveUrl,
+  icon,
+  cover,
+  gallery,
+  startDate,
+} = project.data
+const period = formatProjectPeriod(project.data)
+const coverAlt = `Screenshot of ${name}`
+
+const details = [
+  { label: "Type", value: category },
+  { label: "Status", value: PROJECT_STATUS_LABELS[status] },
+  { label: "Period", value: period },
+  { label: "Role", value: role },
+].filter((detail) => detail.value)
+
+const pageTitle = `${name} - ${PROFILE.name}`
+const pagePath = getProjectHref(project)
+
+const coverImage = await getImage({ src: cover, format: "jpg", width: 1200 })
+const jsonLd: WithContext<CreativeWork> = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name,
+  description: summary,
+  genre: category,
+  url: new URL(pagePath, Astro.site).href,
+  image: new URL(coverImage.src, Astro.site).href,
+  creator: getPersonSchema(Astro.site),
+  ...(startDate && { dateCreated: startDate.toISOString().slice(0, 10) }),
+  ...(stack.length > 0 && { keywords: stack.join(", ") }),
+  ...(url && status === "live" && { sameAs: url }),
+}
+const breadcrumbs = [
+  { name: "Home", path: "/" },
+  { name: "Projects", path: "/projects" },
+  { name, path: pagePath },
+]
+const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
+---
+
+<RootLayout
+  title={pageTitle}
+  description={summary}
+  type="article"
+  image={{ src: cover, alt: coverAlt }}
+>
+  <main class="container mt-20 max-w-5xl space-y-12 py-20">
+    <Breadcrumb>
+      <BreadcrumbList>
+        {
+          breadcrumbs.map(({ name: crumb, path }, index) =>
+            index < breadcrumbs.length - 1 ? (
+              <>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href={path}>{crumb}</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+              </>
+            ) : (
+              <BreadcrumbItem>
+                <span aria-current="page" class="text-foreground">
+                  {crumb}
+                </span>
+              </BreadcrumbItem>
+            ),
+          )
+        }
+      </BreadcrumbList>
+    </Breadcrumb>
+    <article class="space-y-12" aria-labelledby="project-title">
+      <header class="space-y-6">
+        <div class="flex items-center gap-4">
+          {icon && <Image src={icon} alt="" class="size-12 shrink-0" />}
+          <ProjectStatusBadge status={status} />
+        </div>
+        <Typography variant="h1" id="project-title">{name}</Typography>
+        <Typography variant="p" className="max-w-3xl text-balance">
+          {summary}
+        </Typography>
+        {
+          ((url && status === "live") || archiveUrl) && (
+            <div class="flex flex-wrap gap-2">
+              {url && status === "live" && (
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noreferrer"
+                  class={buttonVariants()}
+                >
+                  Visit {name}
+                  <span class="sr-only">(opens in a new tab)</span>
+                  <ArrowUpRight className="size-5" />
+                </a>
+              )}
+              {archiveUrl && (
+                <a
+                  href={archiveUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  class={buttonVariants({ variant: "outline" })}
+                >
+                  <Archive className="size-5" />
+                  View archived version
+                  <span class="sr-only">(opens in a new tab)</span>
+                </a>
+              )}
+            </div>
+          )
+        }
+      </header>
+      <figure>
+        <Image
+          src={cover}
+          alt={coverAlt}
+          widths={[640, 1024, 1600]}
+          sizes="(min-width: 1024px) 1024px, 100vw"
+          class="w-full border"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </figure>
+      <div class="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_16rem]">
+        <aside
+          aria-labelledby="project-details-title"
+          class="lg:col-start-2 lg:row-start-1"
+        >
+          <h2 id="project-details-title" class="sr-only">Project details</h2>
+          <dl
+            class="grid grid-cols-2 gap-4 border px-8 py-6 font-mono lg:grid-cols-1"
+          >
+            {
+              details.map(({ label, value }) => (
+                <div>
+                  <dt class="text-muted-foreground text-xs uppercase">
+                    {label}
+                  </dt>
+                  <dd class="font-medium">{value}</dd>
+                </div>
+              ))
+            }
+            {
+              stack.length > 0 && (
+                <div class="col-span-2 lg:col-span-1">
+                  <dt class="text-muted-foreground mb-1.5 text-xs uppercase">
+                    Stack
+                  </dt>
+                  <dd>
+                    <ProjectStack stack={stack} aria-label={`${name} stack`} />
+                  </dd>
+                </div>
+              )
+            }
+          </dl>
+        </aside>
+        <div class="lg:col-start-1 lg:row-start-1 [&>:first-child]:mt-0">
+          <Content components={projectContentComponents} />
+        </div>
+      </div>
+      {
+        gallery.length > 0 && (
+          <section aria-labelledby="gallery-title" class="space-y-8">
+            <Typography variant="h2" id="gallery-title">
+              Project <span class="text-primary">Gallery</span>
+            </Typography>
+            <ul role="list" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {gallery.map(({ image, alt, caption }) => (
+                <li>
+                  <figure class="space-y-2">
+                    <Image
+                      src={image}
+                      alt={alt}
+                      widths={[640, 1024]}
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      class="w-full border"
+                    />
+                    {caption && (
+                      <figcaption class="text-muted-foreground font-mono text-sm">
+                        {caption}
+                      </figcaption>
+                    )}
+                  </figure>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+    </article>
+    <section
+      aria-labelledby="project-cta-title"
+      class="flex flex-col items-center gap-6 border px-8 py-6 text-center md:flex-row md:justify-between md:text-left"
+    >
+      <hgroup class="space-y-2">
+        <Typography variant="h4" as="h2" id="project-cta-title">
+          Have a project <span class="text-primary">like this</span> in mind?
+        </Typography>
+        <Typography variant="p">Let's talk about how I can help.</Typography>
+      </hgroup>
+      <ContactButton />
+    </section>
+  </main>
+  <script
+    slot="json-ld"
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(jsonLd)}
+  />
+  <script
+    slot="json-ld"
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(breadcrumbJsonLd)}
+  />
+</RootLayout>

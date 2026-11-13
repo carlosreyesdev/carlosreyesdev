@@ -15,8 +15,8 @@ import {
 // Main navigation links for the site
 export const NAVIGATION_LINKS = [
   {
-    label: "Showcase",
-    href: "/#showcase",
+    label: "Projects",
+    href: "/projects",
   },
   {
     label: "Links",
