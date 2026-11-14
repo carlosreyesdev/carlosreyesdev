@@ -1,5 +1,4 @@
 ---
-import { PROFILE } from "@/constants/profile"
 import { getProjectHref, getProjects } from "@/lib/projects"
 import { cn } from "@/lib/utils"
 import { Image, Picture } from "astro:assets"
@@ -41,14 +40,13 @@ const SPAN_CLASSES: Record<number, string> = {
 const spans = getBentoSpans(projects.length)
 ---
 
-<section class="container space-y-8">
+<section class="container space-y-8" aria-labelledby="showcase">
   <hgroup class="mx-auto max-w-3xl space-y-4 text-center">
     <Typography variant="h2" id="showcase">
       Featured <span class="text-primary">Projects</span>
     </Typography>
     <Typography variant="p" className="text-balance">
-      Explore my work as a {PROFILE.title} with a focus on AI-driven and user-friendly
-      software experiences.
+      Real products for real clients, from marketing sites to full platforms.
     </Typography>
   </hgroup>
   <BentoGrid>
@@ -62,8 +60,8 @@ const spans = getBentoSpans(projects.length)
             description={summary}
             href={getProjectHref(project)}
             target="_self"
-            cta="Read the story"
-            ctaLabel={`Read the story of ${name}`}
+            cta="View project"
+            ctaLabel={`View the ${name} project`}
             className={SPAN_CLASSES[spans[index]]}
           >
             {icon ? <Image slot="icon" src={icon} alt="" /> : null}

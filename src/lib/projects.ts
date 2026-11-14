@@ -20,7 +20,10 @@ export function getProjectHref(project: Project) {
   return `/projects/${project.id}`
 }
 
-const yearFormatter = new Intl.DateTimeFormat("en", { year: "numeric" })
+const yearFormatter = new Intl.DateTimeFormat("en", {
+  year: "numeric",
+  timeZone: "UTC",
+})
 
 export function formatProjectPeriod({
   startDate,

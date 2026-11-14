@@ -5,8 +5,6 @@ import ContactButton from "../ContactButton.astro"
 import Iso from "../Iso.astro"
 import SocialLinks from "../SocialLinks.astro"
 import { Typography } from "../ui/typography"
-import Announcement from "./Announcement.astro"
-import Skills from "./Skills.astro"
 ---
 
 <header class="mt-20 flex flex-col gap-y-20 overflow-hidden py-20">
@@ -27,7 +25,6 @@ import Skills from "./Skills.astro"
     <figcaption
       class="space-y-6 text-center sm:max-w-lg md:max-w-xl xl:text-left"
     >
-      <Announcement />
       <Typography variant="h1">
         {PROFILE.title}{" "}
         <span class="text-primary">for the AI Era</span>
@@ -43,5 +40,4 @@ import Skills from "./Skills.astro"
       </div>
     </figcaption>
   </figure>
-  <Skills />
 </header>

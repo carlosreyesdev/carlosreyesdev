@@ -1,4 +1,5 @@
 ---
+import About from "@/components/home/About.astro"
 import Contact from "@/components/home/Contact.astro"
 import Hero from "@/components/home/Hero.astro"
 import Showcase from "@/components/home/Showcase.astro"
@@ -23,6 +24,7 @@ const jsonLd: WithContext<ProfilePage> = {
 <RootLayout title={pageTitle} description={pageDescription}>
   <Hero />
   <main class="flex flex-col gap-y-20 py-20">
+    <About />
     <Showcase />
     <Contact />
   </main>

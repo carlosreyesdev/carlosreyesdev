@@ -1,0 +1,123 @@
+---
+import aboutPhoto from "@/assets/about-placeholder.jpg"
+import beyondPhoto from "@/assets/beyond-placeholder.jpg"
+import { PROFILE_LINKS } from "@/constants/links"
+import { Picture } from "astro:assets"
+import { DraftingCompass, Eye, ListChecks } from "lucide-react"
+import { Anchor } from "../ui/anchor"
+import { Typography } from "../ui/typography"
+
+const blog = PROFILE_LINKS.find((link) => link.kind === "blog")
+
+const principles = [
+  {
+    title: "I engineer, agents accelerate",
+    description:
+      "AI agents speed up implementation, but scope, architecture and every technical decision stay with me. The engineering is still my job.",
+    icon: DraftingCompass,
+  },
+  {
+    title: "Taste doesn't get delegated",
+    description:
+      "Years of obsessing over interfaces taught me how software should look and feel. That eye is what turns fast output into a polished product.",
+    icon: Eye,
+  },
+  {
+    title: "Nothing ships unreviewed",
+    description:
+      "Speed only matters if it holds up. I review every change and try every screen myself before it reaches real users.",
+    icon: ListChecks,
+  },
+]
+---
+
+<section class="container" aria-labelledby="about">
+  {/* Matches the hero width: max-w-xl + gap-28 + max-w-md */}
+  <div class="mx-auto max-w-xl space-y-20 xl:max-w-[71rem]">
+    <div class="flex flex-col gap-8 xl:flex-row xl:justify-between">
+      <div class="space-y-4 xl:max-w-xl">
+        <Typography
+          variant="h2"
+          id="about"
+          className="text-center xl:text-left"
+        >
+          Same Engineer, <span class="text-primary">New Tools</span>
+        </Typography>
+        <Typography variant="p">
+          I'm a Full Stack Software Engineer based in Venezuela. I help founders
+          and small teams turn ideas into products that ship, from the interface
+          people touch to the systems that keep it running.
+        </Typography>
+        <Typography variant="p">
+          I started in 2020 as a frontend specialist: detail-obsessed,
+          perfectionist, picky about every pixel and every tool in my stack.
+          Over the years I grew into the full stack, and then the way software
+          gets built changed completely. Today AI agents handle much of the
+          typing, but the engineering is still mine: deciding what gets built,
+          how it gets built, and whether it's good enough to ship. The speed is
+          new. The standards aren't.
+        </Typography>
+      </div>
+      <div
+        class="relative aspect-4/3 overflow-hidden border xl:aspect-auto xl:w-md xl:shrink-0"
+      >
+        <Picture
+          src={aboutPhoto}
+          alt="Laptop showing code on a desk, next to an external monitor"
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1280px) 448px, (min-width: 640px) 576px, 100vw"
+          class="absolute inset-0 size-full object-cover"
+        />
+      </div>
+    </div>
+    <div class="space-y-8">
+      <Typography variant="h3" className="text-center">
+        How I Work Today
+      </Typography>
+      <ol role="list" class="grid gap-10 xl:grid-cols-3 xl:gap-12">
+        {
+          principles.map(({ title, description, icon: Icon }) => (
+            <li class="flex flex-col items-center gap-2 text-center">
+              <Icon
+                aria-hidden
+                className="text-primary mb-2 size-7 md:size-8 lg:size-9"
+              />
+              <Typography variant="h4">{title}</Typography>
+              <Typography variant="p" className="text-muted-foreground">
+                {description}
+              </Typography>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+    <div
+      class="flex flex-col gap-8 xl:flex-row-reverse xl:items-center xl:justify-between"
+    >
+      <div class="space-y-6 xl:max-w-xl">
+        <Typography variant="h3" className="text-center xl:text-left">
+          Beyond the Code
+        </Typography>
+        <Typography variant="p">
+          I write about software and the craft behind it, in Spanish, on{" "}
+          <Anchor href={blog?.link} target="_blank" rel="noreferrer"
+            >La Esquina del Código</Anchor
+          >. I'm also hooked on single-player games and their soundtracks,
+          always hunting for the next one to obsess over and talk about for
+          days. And yes, my best project ideas still show up in the shower.
+        </Typography>
+      </div>
+      <div
+        class="relative aspect-4/3 overflow-hidden border xl:w-md xl:shrink-0"
+      >
+        <Picture
+          src={beyondPhoto}
+          alt="Game controller resting on top of a video game console"
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1280px) 448px, (min-width: 640px) 576px, 100vw"
+          class="absolute inset-0 size-full object-cover"
+        />
+      </div>
+    </div>
+  </div>
+</section>

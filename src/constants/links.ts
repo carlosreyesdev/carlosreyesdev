@@ -1,3 +1,4 @@
+import { XLogo } from "@/components/icons/x-logo"
 import { PROFILE } from "@/constants/profile"
 import { parsePhoneNumber } from "@/lib/utils"
 import {
@@ -8,7 +9,6 @@ import {
   Mail,
   MessageCircle,
   Rss,
-  Twitter,
   type LucideIcon,
 } from "lucide-react"
 
@@ -34,7 +34,7 @@ type ProfileLinkKind = "social" | "website" | "blog" | "contact"
 export interface ProfileLink {
   name: string
   link: string
-  icon: LucideIcon
+  icon: LucideIcon | typeof XLogo
   kind: ProfileLinkKind
   handle?: string
   subtitle?: string
@@ -86,11 +86,11 @@ export const PROFILE_LINKS: ProfileLink[] = [
     external: true,
   },
   {
-    name: "Twitter",
-    link: `https://twitter.com/${PROFILE.handles.twitter}`,
-    icon: Twitter,
+    name: "X",
+    link: `https://x.com/${PROFILE.handles.x}`,
+    icon: XLogo,
     kind: "social",
-    handle: formatHandle(PROFILE.handles.twitter),
+    handle: formatHandle(PROFILE.handles.x),
     external: true,
   },
   {

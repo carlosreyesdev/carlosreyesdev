@@ -21,15 +21,14 @@ export function Menu({ socialLinks }: MenuProps) {
       <DrawerTrigger asChild>
         <Button variant="ghost" size="icon" className="sm:hidden">
           <MenuIcon className="size-8" />
-          <span className="sr-only">Open Drawer</span>
+          <span className="sr-only">Open menu</span>
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="sr-only">
           <DrawerTitle>Navigation Menu</DrawerTitle>
           <DrawerDescription>
-            Use the links below to navigate through the site. For any inquiries,
-            feel free to reach out via the contact page.
+            Browse the site or get in touch through the contact section.
           </DrawerDescription>
         </DrawerHeader>
         <div className="flex flex-col gap-y-4 p-12">
