@@ -2,6 +2,7 @@
 import ContactButton from "@/components/ContactButton.astro"
 import ProjectStack from "@/components/projects/ProjectStack.astro"
 import ProjectStatusBadge from "@/components/projects/ProjectStatusBadge.astro"
+import ProjectStoryPlaceholder from "@/components/projects/ProjectStoryPlaceholder.astro"
 import { projectContentComponents } from "@/components/projects/project-content-components"
 import {
   Breadcrumb,
@@ -18,6 +19,7 @@ import {
   formatProjectPeriod,
   getProjectHref,
   getProjects,
+  hasProjectStory,
   PROJECT_STATUS_LABELS,
   type Project,
 } from "@/lib/projects"
@@ -41,6 +43,7 @@ interface Props {
 }
 const { project } = Astro.props
 const { Content } = await render(project)
+const hasStory = hasProjectStory(project)
 const {
   name,
   category,
@@ -207,7 +210,13 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
         <div
           class="max-w-3xl lg:col-start-1 lg:row-start-1 [&>:first-child]:mt-0"
         >
-          <Content components={projectContentComponents} />
+          {
+            hasStory ? (
+              <Content components={projectContentComponents} />
+            ) : (
+              <ProjectStoryPlaceholder name={name} />
+            )
+          }
         </div>
       </div>
       {

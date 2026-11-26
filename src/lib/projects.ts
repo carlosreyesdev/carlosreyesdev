@@ -16,6 +16,12 @@ export async function getProjects({ featured }: { featured?: boolean } = {}) {
   return projects.sort((a, b) => a.data.order - b.data.order)
 }
 
+// The MDX template only ships a comment, so a body without anything else
+// means the story has not been written yet
+export function hasProjectStory(project: Project) {
+  return !!project.body?.replace(/\{\/\*[\s\S]*?\*\/\}/g, "").trim()
+}
+
 export function getProjectHref(project: Project) {
   return `/projects/${project.id}`
 }
