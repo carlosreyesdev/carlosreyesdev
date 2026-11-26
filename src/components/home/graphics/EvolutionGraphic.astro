@@ -1,0 +1,624 @@
+---
+// Same engineer, new tools, on a 400x300 canvas:
+// 1. 2020 frontend and 2. 2022 full stack: "me" drawing every piece by hand
+// 3. AI era: I still draw the architecture, agents fill in the details in
+//    parallel as drafts, and nothing turns solid until I approve it.
+// The whole timeline is computed here, so the cursor follows every stroke
+type Point = [number, number]
+
+interface Stroke {
+  d: string
+  /** Route the cursor follows while the stroke is drawn */
+  points: Point[]
+}
+
+const polyline = (points: Point[], closed = false): Stroke => ({
+  d: `M${points.map(([x, y]) => `${x} ${y}`).join("L")}${closed ? "Z" : ""}`,
+  points: closed ? [...points, points[0]] : points,
+})
+const rect = (x: number, y: number, width: number, height: number) =>
+  polyline(
+    [
+      [x, y],
+      [x + width, y],
+      [x + width, y + height],
+      [x, y + height],
+    ],
+    true,
+  )
+const line = (x1: number, y1: number, x2: number, y2: number) =>
+  polyline([
+    [x1, y1],
+    [x2, y2],
+  ])
+const routeLength = (points: Point[]) =>
+  points
+    .slice(1)
+    .reduce(
+      (total, [x, y], index) =>
+        total + Math.hypot(x - points[index][0], y - points[index][1]),
+      0,
+    )
+
+// Hand-drawing speed (canvas units per second) and travel between strokes
+const SPEED = 450
+const TRAVEL = 0.18
+
+const cursorFrames: { at: number; point: Point }[] = [
+  { at: 0, point: [120, 240] },
+]
+let clock = 0.4
+let cursor: Point = [120, 240]
+
+const moveCursor = (point: Point, duration: number) => {
+  cursorFrames.push({ at: clock, point: cursor })
+  clock += duration
+  cursorFrames.push({ at: clock, point })
+  cursor = point
+}
+
+const drawByHand = (strokes: Stroke[]) =>
+  strokes.map((stroke) => {
+    moveCursor(stroke.points[0], TRAVEL)
+    const start = clock
+    let walked = 0
+    stroke.points.slice(1).forEach((point, index) => {
+      walked += routeLength([stroke.points[index], point])
+      cursorFrames.push({ at: start + walked / SPEED, point })
+    })
+    clock = start + routeLength(stroke.points) / SPEED
+    cursor = stroke.points.at(-1)!
+    return { d: stroke.d, start, end: clock }
+  })
+
+// 1. Frontend, by hand
+const frontend = drawByHand([
+  rect(24, 70, 160, 120),
+  line(24, 86, 184, 86),
+  rect(34, 96, 60, 8),
+  line(34, 116, 154, 116),
+  rect(34, 140, 40, 40),
+  rect(84, 140, 40, 40),
+  rect(134, 140, 40, 40),
+])
+const FRONTEND_DONE = clock
+
+// 2. Full stack, by hand
+clock += 0.3
+const FULL_STACK_START = clock
+const fullStack = drawByHand([
+  line(184, 110, 236, 110),
+  rect(236, 92, 72, 36),
+  line(308, 110, 340, 110),
+  {
+    d: "M340 88a22 6 0 1 0 44 0a22 6 0 1 0 -44 0Z",
+    points: [
+      [340, 88],
+      [362, 94],
+      [384, 88],
+      [362, 82],
+      [340, 88],
+    ],
+  },
+  {
+    d: "M340 88v34a22 6 0 0 0 44 0v-34",
+    points: [
+      [340, 88],
+      [340, 122],
+      [362, 128],
+      [384, 122],
+      [384, 88],
+    ],
+  },
+])
+const FULL_STACK_DONE = clock
+
+// 3. AI era: agents show up while I draw the new architecture
+clock += 0.35
+const AI_START = clock
+clock += 0.2
+const architecture = drawByHand([
+  line(184, 170, 236, 170),
+  rect(236, 152, 72, 36),
+  line(308, 170, 336, 170),
+  rect(336, 152, 48, 36),
+])
+const ARCHITECTURE_DONE = clock
+
+const agents = [
+  { x: 104, y: 36, beam: line(104, 46, 104, 70) },
+  { x: 272, y: 36, beam: line(272, 46, 272, 92) },
+  { x: 362, y: 36, beam: line(362, 46, 362, 82) },
+]
+const diamond = (x: number, y: number) =>
+  `M${x} ${y - 10}L${x + 10} ${y}L${x} ${y + 10}L${x - 10} ${y}Z`
+
+const BEAMS_AT = ARCHITECTURE_DONE + 0.1
+const DRAFTS_AT = BEAMS_AT + 0.15
+const DRAFT_STAGGER = 0.05
+
+// What each agent fills in, and where I stamp my approval
+const agentWork = [
+  {
+    badge: [174, 140] as Point,
+    strokes: [
+      line(34, 126, 124, 126),
+      ...[34, 84, 134].flatMap((x) => [
+        rect(x + 6, 146, 12, 12),
+        line(x + 6, 164, x + 34, 164),
+        line(x + 6, 171, x + 26, 171),
+      ]),
+    ],
+  },
+  {
+    badge: [308, 140] as Point,
+    strokes: [
+      line(244, 102, 292, 102),
+      line(244, 110, 280, 110),
+      line(244, 118, 298, 118),
+      line(244, 162, 296, 162),
+      line(244, 170, 284, 170),
+      line(244, 178, 300, 178),
+    ],
+  },
+  {
+    badge: [384, 152] as Point,
+    strokes: [
+      { d: "M340 105a22 6 0 0 0 44 0", points: [] },
+      rect(342, 158, 36, 6),
+      rect(342, 168, 36, 6),
+      rect(342, 178, 36, 6),
+    ],
+  },
+]
+
+let draftIndex = 0
+const drafts = agentWork.map(({ strokes }) =>
+  strokes.map(({ d }) => ({ d, at: DRAFTS_AT + draftIndex++ * DRAFT_STAGGER })),
+)
+clock = DRAFTS_AT + draftIndex * DRAFT_STAGGER + 0.45
+
+// Review: I visit every agent's work and approve it
+const approvals = agentWork.map(({ badge: [x, y] }) => {
+  moveCursor([x + 4, y + 4], 0.5)
+  clock += 0.1
+  const at = clock
+  clock += 0.25
+  return at
+})
+const REVIEW_DONE = clock
+moveCursor([210, 232], 0.6)
+
+const PULSES_AT = REVIEW_DONE + 0.3
+const HOLD = PULSES_AT + 4.5
+const FADE = HOLD + 0.9
+const DURATION = FADE + 0.6
+cursorFrames.push({ at: DURATION, point: cursor })
+
+// Rendered at build time and refreshed on the client, so it stays current
+// even if the site isn't rebuilt when the year changes
+const currentYear = new Date().getFullYear()
+
+// Keyframes, all on the same loop
+const pct = (seconds: number) => `${((seconds / DURATION) * 100).toFixed(3)}%`
+const OUT = `${pct(FADE)},100%`
+
+const drawFrames = (name: string, start: number, end: number) =>
+  `@keyframes ${name}{0%,${pct(start)}{stroke-dashoffset:1;opacity:1}${pct(end)},${pct(HOLD)}{stroke-dashoffset:0;opacity:1}${OUT}{stroke-dashoffset:0;opacity:0}}`
+const fadeFrames = (name: string, at: number, until = HOLD) =>
+  `@keyframes ${name}{0%,${pct(at)}{opacity:0}${pct(at + 0.3)},${pct(until)}{opacity:1}${pct(until === HOLD ? FADE : until + 0.3)},100%{opacity:0}}`
+const popFrames = (name: string, at: number) =>
+  `@keyframes ${name}{0%,${pct(at)}{opacity:0;transform:scale(.4)}${pct(at + 0.15)}{opacity:1;transform:scale(1.15)}${pct(at + 0.3)},${pct(HOLD)}{opacity:1;transform:scale(1)}${OUT}{opacity:0;transform:scale(1)}}`
+
+const cursorTimeline = [
+  ...new Map(cursorFrames.map((frame) => [pct(frame.at), frame.point])),
+]
+  .map(([at, [x, y]]) => `${at}{transform:translate(${x}px,${y}px)}`)
+  .join("")
+
+const keyframes = [
+  ...[...frontend, ...fullStack, ...architecture].map(({ start, end }, index) =>
+    drawFrames(`evo-stroke-${index}`, start, end),
+  ),
+  drawFrames("evo-timeline-manual", FULL_STACK_START, FULL_STACK_DONE),
+  drawFrames("evo-timeline-ai", AI_START, AI_START + 1.2),
+  fadeFrames("evo-legend-me", 0.2),
+  fadeFrames("evo-stage-frontend", FRONTEND_DONE - 0.2),
+  fadeFrames("evo-stage-full-stack", FULL_STACK_DONE - 0.2),
+  fadeFrames("evo-stage-ai", AI_START),
+  fadeFrames("evo-labels-architecture", ARCHITECTURE_DONE - 0.2),
+  ...agents.map((_, index) =>
+    popFrames(`evo-agent-${index}`, AI_START + index * 0.1),
+  ),
+  ...agents.map((_, index) =>
+    drawFrames(`evo-beam-${index}`, BEAMS_AT, BEAMS_AT + 0.25),
+  ),
+  ...drafts.flatMap((group, groupIndex) =>
+    group.map(({ at }, index) =>
+      fadeFrames(`evo-draft-${groupIndex}-${index}`, at, approvals[groupIndex]),
+    ),
+  ),
+  ...approvals.map((at, index) => fadeFrames(`evo-approved-${index}`, at)),
+  ...approvals.map((at, index) => popFrames(`evo-badge-${index}`, at)),
+  fadeFrames("evo-pulses-agents", BEAMS_AT + 0.25, REVIEW_DONE),
+  fadeFrames("evo-pulses-data", PULSES_AT),
+  fadeFrames("evo-cursor-visibility", 0.05),
+  `@keyframes evo-cursor{${cursorTimeline}}`,
+].join("")
+
+const dataPulses = [
+  "M184 110H236",
+  "M308 110H340",
+  "M184 170H236",
+  "M308 170H336",
+]
+---
+
+<div
+  class="evo absolute inset-0 [box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]"
+  style={{ "--evo-duration": `${DURATION.toFixed(3)}s` }}
+  data-motion-graphic
+  aria-hidden="true"
+>
+  <div class="evo-grid absolute inset-0"></div>
+  <svg
+    viewBox="0 0 400 300"
+    preserveAspectRatio="xMidYMid meet"
+    class="absolute inset-0 size-full"
+  >
+    <!-- Legend -->
+    <g class="evo-legend">
+      <g class="evo-anim" style={{ animationName: "evo-legend-me" }}>
+        <rect x="24" y="12" width="6" height="6" class="evo-fill-me"></rect>
+        <text x="36" y="18">me</text>
+      </g>
+      <g class="evo-anim" style={{ animationName: "evo-stage-ai" }}>
+        <rect x="62" y="12" width="6" height="6" class="evo-fill-agent"></rect>
+        <text x="74" y="18">agents</text>
+      </g>
+    </g>
+
+    <!-- Everything drawn by hand -->
+    {
+      [...frontend, ...fullStack, ...architecture].map(({ d }, index) => (
+        <path
+          d={d}
+          pathLength="1"
+          class="evo-anim evo-stroke evo-me"
+          style={{ animationName: `evo-stroke-${index}` }}
+        />
+      ))
+    }
+
+    <!-- Timeline -->
+    <path
+      d="M24 256H200"
+      pathLength="1"
+      class="evo-anim evo-stroke evo-me"
+      style={{ animationName: "evo-timeline-manual" }}></path>
+    <path
+      d="M200 256H376"
+      pathLength="1"
+      class="evo-anim evo-stroke evo-agent"
+      style={{ animationName: "evo-timeline-ai" }}></path>
+
+    <g class="evo-anim" style={{ animationName: "evo-stage-frontend" }}>
+      <rect x="30" y="76" width="4" height="4" class="evo-fill-me"></rect>
+      <rect x="38" y="76" width="4" height="4" class="evo-fill-me"></rect>
+      <rect x="46" y="76" width="4" height="4" class="evo-fill-me"></rect>
+      <rect x="22" y="254" width="4" height="4" class="evo-fill-me"></rect>
+      <text x="24" y="274" class="evo-label evo-fill-me">frontend</text>
+      <text x="24" y="288" class="evo-year">2020</text>
+    </g>
+
+    <g class="evo-anim" style={{ animationName: "evo-stage-full-stack" }}>
+      <text x="236" y="86" class="evo-box-label">api</text>
+      <text x="340" y="76" class="evo-box-label">db</text>
+      <rect x="198" y="254" width="4" height="4" class="evo-fill-me"></rect>
+      <text x="200" y="274" text-anchor="middle" class="evo-label evo-fill-me"
+        >full stack</text
+      >
+      <text x="200" y="288" text-anchor="middle" class="evo-year">2022</text>
+    </g>
+
+    <g class="evo-anim" style={{ animationName: "evo-labels-architecture" }}>
+      <text x="236" y="146" class="evo-box-label">auth</text>
+      <text x="336" y="146" class="evo-box-label">cache</text>
+    </g>
+
+    <g class="evo-anim" style={{ animationName: "evo-stage-ai" }}>
+      <rect x="374" y="254" width="4" height="4" class="evo-fill-agent"></rect>
+      <text x="376" y="274" text-anchor="end" class="evo-label evo-fill-agent"
+        >AI era</text
+      >
+      <text x="376" y="288" text-anchor="end" class="evo-year" data-current-year
+        >{currentYear}</text
+      >
+    </g>
+
+    <!-- Agents -->
+    {
+      agents.map(({ x, y, beam }, index) => (
+        <>
+          <path
+            d={beam.d}
+            pathLength="1"
+            class="evo-anim evo-stroke evo-agent evo-beam"
+            style={{ animationName: `evo-beam-${index}` }}
+          />
+          <path
+            d={diamond(x, y)}
+            class="evo-anim evo-diamond"
+            style={{ animationName: `evo-agent-${index}` }}
+          />
+        </>
+      ))
+    }
+
+    <g
+      class="evo-anim evo-pulses evo-pulses-agents"
+      style={{ animationName: "evo-pulses-agents" }}
+    >
+      {
+        agents.map(({ beam }, index) => (
+          <path
+            d={beam.d}
+            pathLength="1"
+            class="evo-pulse"
+            style={{ animationDelay: `${index * 0.3}s` }}
+          />
+        ))
+      }
+    </g>
+
+    <!-- Agent work: dashed drafts that turn solid once approved -->
+    {
+      drafts.map((group, groupIndex) =>
+        group.map(({ d }, index) => (
+          <path
+            d={d}
+            class="evo-anim evo-draft"
+            style={{ animationName: `evo-draft-${groupIndex}-${index}` }}
+          />
+        )),
+      )
+    }
+    {
+      agentWork.map(({ strokes }, index) => (
+        <g
+          class="evo-anim evo-approved"
+          style={{ animationName: `evo-approved-${index}` }}
+        >
+          {strokes.map(({ d }) => (
+            <path d={d} />
+          ))}
+        </g>
+      ))
+    }
+    {
+      agentWork.map(({ badge: [x, y] }, index) => (
+        <g
+          class="evo-anim evo-badge"
+          style={{ animationName: `evo-badge-${index}` }}
+        >
+          <rect x={x - 6} y={y - 6} width="12" height="12" />
+          <path
+            d={`M${x - 3} ${y}L${x - 1} ${y + 2.5}L${x + 3.5} ${y - 2.5}`}
+          />
+        </g>
+      ))
+    }
+
+    <g
+      class="evo-anim evo-pulses evo-pulses-data"
+      style={{ animationName: "evo-pulses-data" }}
+    >
+      {
+        dataPulses.map((d, index) => (
+          <path
+            d={d}
+            pathLength="1"
+            class="evo-pulse"
+            style={{ animationDelay: `${index * 0.4}s` }}
+          />
+        ))
+      }
+    </g>
+
+    <!-- My cursor -->
+    <g class="evo-anim evo-cursor" style={{ animationName: "evo-cursor" }}>
+      <g class="evo-anim" style={{ animationName: "evo-cursor-visibility" }}>
+        <path
+          d="M0 0V16L4.5 12L7.5 19L10 18L7 11H12.5Z"
+          class="evo-cursor-arrow"></path>
+        <rect x="12" y="16" width="20" height="12" class="evo-fill-me"></rect>
+        <text x="22" y="25" text-anchor="middle" class="evo-cursor-tag">me</text
+        >
+      </g>
+    </g>
+  </svg>
+</div>
+
+<style is:inline set:html={keyframes}></style>
+
+<script>
+  import "@/lib/pause-offscreen"
+
+  const year = String(new Date().getFullYear())
+  for (const element of document.querySelectorAll("[data-current-year]")) {
+    element.textContent = year
+  }
+</script>
+
+<style>
+  .evo svg {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.025em;
+  }
+
+  .evo-grid {
+    --evo-grid-line: color-mix(in oklch, var(--color-border) 60%, transparent);
+    background-image:
+      linear-gradient(to right, var(--evo-grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--evo-grid-line) 1px, transparent 1px);
+    background-position: center;
+    background-size: 24px 24px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  }
+
+  .evo-anim {
+    animation-duration: var(--evo-duration);
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+  }
+
+  .evo-legend text {
+    fill: var(--color-muted-foreground);
+    font-size: 10px;
+  }
+
+  .evo-fill-me {
+    fill: var(--color-primary);
+  }
+
+  .evo-fill-agent {
+    fill: var(--color-accent);
+  }
+
+  .evo-year {
+    fill: var(--color-muted-foreground);
+    font-size: 10px;
+  }
+
+  .evo-box-label {
+    fill: var(--color-muted-foreground);
+    font-size: 9px;
+  }
+
+  .evo-stroke {
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: square;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  .evo-me {
+    stroke: var(--color-primary);
+  }
+
+  .evo-agent {
+    stroke: var(--color-accent);
+  }
+
+  .evo-beam {
+    stroke-width: 1;
+    stroke-opacity: 0.6;
+  }
+
+  .evo-diamond {
+    fill: color-mix(in oklch, var(--color-accent) 20%, transparent);
+    stroke: var(--color-accent);
+    stroke-width: 1.5;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .evo-draft {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 1.25;
+    stroke-dasharray: 3 2;
+    opacity: 0;
+  }
+
+  .evo-approved {
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 1.5;
+    opacity: 0;
+  }
+
+  .evo-badge {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .evo-badge rect {
+    fill: var(--color-primary);
+  }
+
+  .evo-badge path {
+    fill: none;
+    stroke: var(--color-primary-foreground);
+    stroke-width: 1.75;
+  }
+
+  .evo-pulse {
+    fill: none;
+    stroke-width: 3;
+    stroke-dasharray: 0.2 1;
+    stroke-dashoffset: 0.2;
+    animation: evo-pulse 1.4s ease-in infinite both;
+  }
+
+  .evo-pulses-agents {
+    filter: drop-shadow(0 0 3px var(--color-accent));
+  }
+
+  .evo-pulses-agents .evo-pulse {
+    stroke: var(--color-accent);
+  }
+
+  .evo-pulses-data {
+    filter: drop-shadow(0 0 3px var(--color-primary));
+  }
+
+  .evo-pulses-data .evo-pulse {
+    stroke: var(--color-primary);
+  }
+
+  .evo-cursor-arrow {
+    fill: var(--color-foreground);
+    stroke: var(--color-background);
+    stroke-width: 1;
+  }
+
+  .evo-cursor-tag {
+    fill: var(--color-primary-foreground);
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  @keyframes evo-pulse {
+    from {
+      stroke-dashoffset: 0.2;
+    }
+    to {
+      stroke-dashoffset: -1;
+    }
+  }
+
+  /* Final frame: everything built and approved, no cursor or pulses */
+  @media (prefers-reduced-motion: reduce) {
+    .evo-anim {
+      animation: none !important;
+    }
+
+    .evo-stroke {
+      stroke-dashoffset: 0;
+    }
+
+    .evo-approved {
+      opacity: 1;
+    }
+
+    .evo-cursor,
+    .evo-draft,
+    .evo-pulses {
+      display: none;
+    }
+  }
+</style>

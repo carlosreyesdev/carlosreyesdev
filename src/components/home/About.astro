@@ -1,11 +1,10 @@
 ---
-import aboutPhoto from "@/assets/about-placeholder.jpg"
-import beyondPhoto from "@/assets/beyond-placeholder.jpg"
 import { PROFILE_LINKS } from "@/constants/links"
-import { Picture } from "astro:assets"
 import { DraftingCompass, Eye, ListChecks } from "lucide-react"
 import { Anchor } from "../ui/anchor"
 import { Typography } from "../ui/typography"
+import BeyondVignettesGraphic from "./graphics/BeyondVignettesGraphic.astro"
+import EvolutionGraphic from "./graphics/EvolutionGraphic.astro"
 
 const blog = PROFILE_LINKS.find((link) => link.kind === "blog")
 
@@ -60,13 +59,7 @@ const principles = [
       <div
         class="relative aspect-4/3 overflow-hidden border xl:aspect-auto xl:w-md xl:shrink-0"
       >
-        <Picture
-          src={aboutPhoto}
-          alt="Laptop showing code on a desk, next to an external monitor"
-          widths={[480, 800, 1200]}
-          sizes="(min-width: 1280px) 448px, (min-width: 640px) 576px, 100vw"
-          class="absolute inset-0 size-full object-cover"
-        />
+        <EvolutionGraphic />
       </div>
     </div>
     <div class="space-y-8">
@@ -109,13 +102,7 @@ const principles = [
       <div
         class="relative aspect-4/3 overflow-hidden border xl:w-md xl:shrink-0"
       >
-        <Picture
-          src={beyondPhoto}
-          alt="Game controller resting on top of a video game console"
-          widths={[480, 800, 1200]}
-          sizes="(min-width: 1280px) 448px, (min-width: 640px) 576px, 100vw"
-          class="absolute inset-0 size-full object-cover"
-        />
+        <BeyondVignettesGraphic />
       </div>
     </div>
   </div>

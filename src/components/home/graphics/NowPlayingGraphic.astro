@@ -1,0 +1,288 @@
+---
+// Music player scene of BeyondVignettesGraphic, which handles pausing and framing
+import Iso from "@/components/Iso.astro"
+
+const track = {
+  title: "No Chains Can Last Forever",
+  artist: "CONTROL Resonant feat. costee",
+  album: "Zoe's Mixtape",
+}
+
+// Elapsed and total track time, in seconds
+const ELAPSED = 67
+const TOTAL = 211
+
+const elapsedCss = `
+  @property --np-seconds { syntax: "<integer>"; inherits: true; initial-value: ${ELAPSED}; }
+  @keyframes np-seconds { from { --np-seconds: ${ELAPSED}; } to { --np-seconds: ${TOTAL}; } }
+`
+
+const BAR_COUNT = 32
+
+// Seeded so the equalizer looks the same on every build
+let seed = 7
+const random = () => {
+  seed = (seed * 16807) % 2147483647
+  return (seed - 1) / 2147483646
+}
+
+const bars = Array.from({ length: BAR_COUNT }, () => ({
+  duration: 0.45 + random() * 0.7,
+  delay: -random(),
+  peak: 0.35 + random() * 0.65,
+  rest: 0.08 + random() * 0.2,
+}))
+---
+
+<div
+  class="np absolute inset-0"
+  style={{
+    "--np-total": `${TOTAL - ELAPSED}s`,
+    "--np-start": (ELAPSED / TOTAL).toFixed(3),
+  }}
+>
+  <div class="np-layout">
+    <div class="np-header">
+      <span>now playing</span>
+      <span>{track.album}</span>
+    </div>
+
+    <div class="np-track">
+      <div class="np-vinyl">
+        <div class="np-label">
+          <Iso
+            class="text-primary-foreground h-[42%] w-auto fill-current stroke-0"
+          />
+        </div>
+      </div>
+      <div class="np-meta">
+        <p class="np-title">{track.title}</p>
+        <p class="np-subtitle">{track.artist}</p>
+        <p class="np-tag">single-player · on repeat</p>
+      </div>
+    </div>
+
+    <div class="np-eq">
+      {
+        bars.map(({ duration, delay, peak, rest }) => (
+          <span
+            style={{
+              "--peak": peak.toFixed(2),
+              "--rest": rest.toFixed(2),
+              animationDuration: `${duration.toFixed(2)}s`,
+              animationDelay: `${delay.toFixed(2)}s`,
+            }}
+          />
+        ))
+      }
+    </div>
+
+    <div class="np-progress">
+      <div class="np-bar"><span></span></div>
+      <div class="np-times">
+        <span class="np-elapsed"></span>
+        <span>
+          {Math.floor(TOTAL / 60)}:{String(TOTAL % 60).padStart(2, "0")}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style is:inline set:html={elapsedCss}></style>
+
+<style>
+  .np {
+    container-type: size;
+    font-family: var(--font-mono);
+  }
+
+  .np-layout {
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    gap: 5cqh;
+    height: 100%;
+    /* Leaves room for the host's scene indicator and caption */
+    padding: 14cqh 7cqi 13cqh;
+  }
+
+  .np-header {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-muted-foreground);
+    font-size: clamp(0.625rem, 2.6cqi, 0.8125rem);
+    text-transform: uppercase;
+  }
+
+  .np-header span:first-child {
+    color: var(--color-primary);
+  }
+
+  .np-track {
+    display: flex;
+    gap: 6cqi;
+    align-items: center;
+    min-height: 0;
+  }
+
+  .np-vinyl {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    height: 100%;
+    max-height: 42cqi;
+    aspect-ratio: 1;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    background:
+      conic-gradient(
+        from 20deg,
+        transparent 0 12%,
+        #ffffff14 16%,
+        transparent 22% 62%,
+        #ffffff0d 66%,
+        transparent 72%
+      ),
+      repeating-radial-gradient(circle, transparent 0 2px, #ffffff08 2px 3px),
+      oklch(0.12 0 0);
+    animation: np-spin 3.2s linear infinite;
+  }
+
+  .np-label {
+    display: grid;
+    place-items: center;
+    width: 36%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--color-primary);
+  }
+
+  .np-meta {
+    min-width: 0;
+  }
+
+  .np-title {
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 5.5cqi, 1.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    text-wrap: balance;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .np-subtitle,
+  .np-tag {
+    overflow: hidden;
+    font-size: clamp(0.625rem, 2.8cqi, 0.875rem);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .np-subtitle {
+    margin-top: 0.4em;
+    color: var(--color-muted-foreground);
+  }
+
+  .np-tag {
+    margin-top: 1.2em;
+    color: var(--color-accent);
+  }
+
+  .np-eq {
+    display: flex;
+    gap: 1.2cqi;
+    align-items: flex-end;
+    height: 16cqh;
+  }
+
+  .np-eq span {
+    flex: 1;
+    height: 100%;
+    background: linear-gradient(
+      to top,
+      var(--color-primary),
+      color-mix(in oklch, var(--color-primary) 25%, transparent)
+    );
+    transform: scaleY(var(--rest));
+    transform-origin: bottom;
+    animation: np-bar 1s ease-in-out infinite alternate;
+  }
+
+  .np-progress {
+    display: grid;
+    gap: 2cqh;
+  }
+
+  .np-bar {
+    height: 2px;
+    background: var(--color-border);
+  }
+
+  .np-bar span {
+    display: block;
+    height: 100%;
+    background: var(--color-primary);
+    transform: scaleX(var(--np-start));
+    transform-origin: left;
+    animation: np-progress var(--np-total) linear infinite;
+  }
+
+  .np-times {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-muted-foreground);
+    font-size: clamp(0.625rem, 2.6cqi, 0.8125rem);
+  }
+
+  .np-elapsed {
+    counter-reset: minutes calc((var(--np-seconds) - 30) / 60) seconds
+      mod(var(--np-seconds), 60);
+    animation: np-seconds var(--np-total) linear infinite;
+  }
+
+  .np-elapsed::before {
+    content: counter(minutes) ":" counter(seconds, decimal-leading-zero);
+  }
+
+  @keyframes np-spin {
+    to {
+      rotate: 1turn;
+    }
+  }
+
+  @keyframes np-bar {
+    from {
+      transform: scaleY(var(--rest));
+    }
+    to {
+      transform: scaleY(var(--peak));
+    }
+  }
+
+  @keyframes np-progress {
+    from {
+      transform: scaleX(var(--np-start));
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .np-vinyl,
+    .np-eq span,
+    .np-bar span,
+    .np-elapsed {
+      animation: none;
+    }
+
+    .np-eq span {
+      transform: scaleY(var(--peak));
+    }
+  }
+</style>

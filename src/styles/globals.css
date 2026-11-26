@@ -163,4 +163,8 @@
   body {
     @apply bg-background text-foreground tracking-normal;
   }
+
+  [data-paused] * {
+    animation-play-state: paused !important;
+  }
 }

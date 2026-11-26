@@ -1,0 +1,417 @@
+---
+import NowPlayingGraphic from "./NowPlayingGraphic.astro"
+
+// Three 4s scenes (writing, playing, listening) cross-fading on a 12s loop.
+// Every animation in a scene shares the loop duration and is offset by the
+// scene's start, so the scenes stay in sync forever
+const SCENE = 4
+const scenes = ["writing", "playing", "listening"] as const
+
+const TITLE = "Pensar antes de escribir código"
+const paragraph = [100, 94, 97, 58]
+
+// Generic next-gen controller: plain face buttons, no brand symbols or logos
+const dpad = {
+  up: "M50 40H58V48L54 52L50 48Z",
+  down: "M50 76H58V68L54 64L50 68Z",
+  left: "M36 54H44L48 58L44 62H36Z",
+  right: "M72 54H64L60 58L64 62H72Z",
+}
+const faceButtons = {
+  top: { cx: 186, cy: 44 },
+  left: { cx: 172, cy: 58 },
+  right: { cx: 200, cy: 58 },
+  bottom: { cx: 186, cy: 72 },
+}
+
+// Pressed in order, each one lights up its chip in the combo row
+const combo = [
+  { shape: "path", d: dpad.up, chip: "M-4 2L0 -3L4 2Z" },
+  { shape: "path", d: dpad.down, chip: "M-4 -2L0 3L4 -2Z" },
+  {
+    shape: "circle",
+    ...faceButtons.right,
+    chip: "M-3.5 0a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0Z",
+  },
+  {
+    shape: "circle",
+    ...faceButtons.bottom,
+    chip: "M-3.5 0a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0Z",
+  },
+] as const
+const pressDelay = (index: number) => `${SCENE + 0.9 + index * 0.45}s`
+---
+
+<div
+  class="bv absolute inset-0 [box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]"
+  style={{ "--bv-duration": `${SCENE * scenes.length}s` }}
+  data-motion-graphic
+  aria-hidden="true"
+>
+  <div class="bv-indicator">
+    {
+      scenes.map((_, index) => (
+        <span>
+          <span style={{ animationDelay: `${index * SCENE}s` }} />
+        </span>
+      ))
+    }
+  </div>
+
+  <!-- Writing -->
+  <div class="bv-scene bv-scene-writing" style={{ animationDelay: "0s" }}>
+    <div class="bv-article">
+      <p class="bv-site">esquinadelcodigo.com</p>
+      <p class="bv-title">
+        <span style={{ "--chars": TITLE.length }}>{TITLE}</span>
+      </p>
+      <div class="bv-paragraph">
+        {
+          paragraph.map((width, index) => (
+            <span
+              style={{
+                width: `${width}%`,
+                animationDelay: `${0.15 * index}s`,
+              }}
+            />
+          ))
+        }
+      </div>
+      <p class="bv-meta">es · 6 min de lectura</p>
+    </div>
+    <p class="bv-caption">// writing</p>
+  </div>
+
+  <!-- Playing -->
+  <div class="bv-scene" style={{ animationDelay: `${SCENE}s` }}>
+    <svg viewBox="0 0 240 172" class="bv-gamepad">
+      <!-- Two-tone shell: outer wings and a darker center body -->
+      <path class="bv-body" d="M80 21H160L170 103H70Z"></path>
+      <path
+        class="bv-outline"
+        d="M60 20H180C200 20 212 30 218 46C226 68 232 100 230 118C228 134 212 142 200 134C190 128 182 116 172 104H68C58 116 50 128 40 134C28 142 12 134 10 118C8 100 14 68 22 46C28 30 40 20 60 20Z"
+      ></path>
+
+      <!-- Touchpad framed by the light bar -->
+      <path
+        class="bv-outline"
+        d="M86 24H154V58C154 64 150 68 144 68H96C90 68 86 64 86 58Z"></path>
+      <path
+        class="bv-lightbar"
+        d="M81 26V60C81 66 85 70 90 72M159 26V60C159 66 155 70 150 72"></path>
+
+      <path class="bv-pill" d="M72 29L75 39M168 29L165 39"></path>
+
+      {Object.values(dpad).map((d) => <path class="bv-outline" d={d} />)}
+      {
+        Object.values(faceButtons).map(({ cx, cy }) => (
+          <circle class="bv-outline" cx={cx} cy={cy} r="6" />
+        ))
+      }
+
+      <circle class="bv-outline" cx="92" cy="88" r="11"></circle>
+      <circle class="bv-outline" cx="92" cy="88" r="6"></circle>
+      <circle class="bv-outline" cx="148" cy="88" r="11"></circle>
+      <circle class="bv-outline" cx="148" cy="88" r="6"></circle>
+      <circle class="bv-outline" cx="120" cy="82" r="4"></circle>
+      <path class="bv-pill" d="M115 95H125"></path>
+
+      {
+        combo.map((button, index) =>
+          button.shape === "path" ? (
+            <path
+              class="bv-press"
+              d={button.d}
+              style={{ animationDelay: pressDelay(index) }}
+            />
+          ) : (
+            <circle
+              class="bv-press"
+              cx={button.cx}
+              cy={button.cy}
+              r="6"
+              style={{ animationDelay: pressDelay(index) }}
+            />
+          ),
+        )
+      }
+
+      <!-- Combo row -->
+      {
+        combo.map(({ chip }, index) => (
+          <g transform={`translate(${93 + index * 18} 160)`}>
+            <rect x="-7" y="-7" width="14" height="14" class="bv-chip-frame" />
+            <path
+              d={chip}
+              class="bv-chip"
+              style={{ animationDelay: pressDelay(index) }}
+            />
+          </g>
+        ))
+      }
+    </svg>
+    <p class="bv-caption">// playing</p>
+  </div>
+
+  <!-- Listening -->
+  <div class="bv-scene" style={{ animationDelay: `${SCENE * 2}s` }}>
+    <NowPlayingGraphic />
+    <p class="bv-caption">// listening</p>
+  </div>
+</div>
+
+<script>
+  import "@/lib/pause-offscreen"
+</script>
+
+<style>
+  .bv {
+    container-type: size;
+    font-family: var(--font-mono);
+  }
+
+  .bv-indicator {
+    position: absolute;
+    top: 5cqh;
+    right: 5cqi;
+    z-index: 1;
+    display: flex;
+    gap: 1.5cqi;
+  }
+
+  .bv-indicator > span {
+    width: 8cqi;
+    height: 2px;
+    background: var(--color-border);
+  }
+
+  .bv-indicator > span > span {
+    display: block;
+    height: 100%;
+    background: var(--color-primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: bv-indicator var(--bv-duration) linear infinite both;
+  }
+
+  .bv-scene {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    animation: bv-scene var(--bv-duration) ease-in-out infinite both;
+  }
+
+  .bv-caption {
+    position: absolute;
+    bottom: 5cqh;
+    left: 5cqi;
+    color: var(--color-muted-foreground);
+    font-size: clamp(0.625rem, 2.6cqi, 0.8125rem);
+  }
+
+  /* Writing */
+  .bv-article {
+    width: 78cqi;
+  }
+
+  .bv-site,
+  .bv-meta {
+    color: var(--color-muted-foreground);
+    font-size: clamp(0.5625rem, 2.4cqi, 0.75rem);
+  }
+
+  .bv-title {
+    margin-top: 0.6em;
+    font-size: clamp(0.75rem, 4.2cqi, 1.25rem);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .bv-title span {
+    display: inline-block;
+    width: 0;
+    overflow: hidden;
+    vertical-align: bottom;
+    border-right: 0.5em solid var(--color-primary);
+    animation: bv-type var(--bv-duration) infinite both;
+  }
+
+  .bv-paragraph {
+    display: grid;
+    gap: 2.4cqh;
+    margin: 5cqh 0 4cqh;
+  }
+
+  .bv-paragraph span {
+    height: 2.4cqh;
+    background: var(--color-muted);
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: bv-bar var(--bv-duration) ease-out infinite both;
+  }
+
+  /* Playing */
+  .bv-gamepad {
+    width: 70cqi;
+    max-height: 68cqh;
+  }
+
+  .bv-body {
+    fill: color-mix(in oklch, var(--color-foreground) 6%, transparent);
+  }
+
+  .bv-outline {
+    fill: none;
+    stroke: var(--color-muted-foreground);
+    stroke-width: 1.5;
+  }
+
+  .bv-pill {
+    stroke: var(--color-muted-foreground);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+
+  .bv-lightbar {
+    fill: none;
+    stroke: var(--color-primary);
+    stroke-width: 2;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 3px var(--color-primary));
+    animation: bv-lightbar 1.6s ease-in-out infinite alternate;
+  }
+
+  .bv-press {
+    fill: var(--color-primary);
+    filter: drop-shadow(0 0 4px var(--color-primary));
+    opacity: 0;
+    animation: bv-press var(--bv-duration) ease-out infinite both;
+  }
+
+  .bv-chip-frame {
+    fill: none;
+    stroke: var(--color-border);
+    stroke-width: 1;
+  }
+
+  .bv-chip {
+    fill: var(--color-border);
+    animation: bv-key var(--bv-duration) ease-out infinite both;
+  }
+
+  @keyframes bv-scene {
+    0% {
+      opacity: 0;
+    }
+    3%,
+    30% {
+      opacity: 1;
+    }
+    33.33%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes bv-indicator {
+    0% {
+      transform: scaleX(0);
+    }
+    33.33% {
+      transform: scaleX(1);
+    }
+    33.34%,
+    100% {
+      transform: scaleX(0);
+    }
+  }
+
+  @keyframes bv-type {
+    0%,
+    4% {
+      width: 0;
+      /* One step per character of TITLE */
+      animation-timing-function: steps(31, end);
+    }
+    16%,
+    100% {
+      width: calc(var(--chars) * 1ch);
+    }
+  }
+
+  @keyframes bv-bar {
+    0%,
+    16% {
+      transform: scaleX(0);
+    }
+    20%,
+    100% {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes bv-press {
+    0% {
+      opacity: 0;
+    }
+    0.8% {
+      opacity: 1;
+    }
+    4%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* Lit until its scene fades out, then reset while hidden */
+  @keyframes bv-key {
+    0% {
+      fill: var(--color-border);
+    }
+    0.8%,
+    25% {
+      fill: var(--color-primary);
+    }
+    25.01%,
+    100% {
+      fill: var(--color-border);
+    }
+  }
+
+  @keyframes bv-lightbar {
+    from {
+      opacity: 0.55;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bv-scene,
+    .bv-indicator > span > span,
+    .bv-title span,
+    .bv-paragraph span,
+    .bv-press,
+    .bv-chip,
+    .bv-lightbar {
+      animation: none;
+    }
+
+    /* Only the writing scene is shown, fully drawn */
+    .bv-scene-writing {
+      opacity: 1;
+    }
+
+    .bv-title span {
+      width: auto;
+      border-right: 0;
+    }
+
+    .bv-paragraph span {
+      transform: none;
+    }
+  }
+</style>
