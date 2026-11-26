@@ -144,7 +144,9 @@
   }
 }
 
-@utility container {
+@utility shell {
+  width: 100%;
+  max-width: var(--container-7xl);
   padding-inline: 2rem;
   margin-inline: auto;
 }

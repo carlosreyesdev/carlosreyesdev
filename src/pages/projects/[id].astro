@@ -96,7 +96,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
   type="article"
   image={{ src: cover, alt: coverAlt }}
 >
-  <main class="container mt-20 max-w-5xl space-y-12 py-20">
+  <main class="shell mt-20 space-y-12 py-20">
     <Breadcrumb>
       <BreadcrumbList>
         {
@@ -165,7 +165,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
           src={cover}
           alt={coverAlt}
           widths={[640, 1024, 1600]}
-          sizes="(min-width: 1024px) 1024px, 100vw"
+          sizes="(min-width: 1280px) 1216px, 100vw"
           class="w-full border"
           loading="eager"
           fetchpriority="high"
@@ -204,7 +204,9 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
             }
           </dl>
         </aside>
-        <div class="lg:col-start-1 lg:row-start-1 [&>:first-child]:mt-0">
+        <div
+          class="max-w-3xl lg:col-start-1 lg:row-start-1 [&>:first-child]:mt-0"
+        >
           <Content components={projectContentComponents} />
         </div>
       </div>
