@@ -10,5 +10,5 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  integrations: [sitemap(), react(), mdx()],
+  integrations: [sitemap(), react(), mdx({ gfm: true })],
 })

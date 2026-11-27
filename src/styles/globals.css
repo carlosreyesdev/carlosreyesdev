@@ -164,6 +164,10 @@
     @apply bg-background text-foreground tracking-normal;
   }
 
+  kbd {
+    @apply bg-muted border border-b-2 px-[0.4em] py-[0.1em] font-mono text-[0.8em] font-medium;
+  }
+
   [data-paused] * {
     animation-play-state: paused !important;
   }
