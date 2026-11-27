@@ -7,11 +7,9 @@ import SocialLinks from "../SocialLinks.astro"
 import { Typography } from "../ui/typography"
 ---
 
-<header class="mt-20 flex flex-col gap-y-20 overflow-hidden py-20">
-  <figure
-    class="shell flex flex-col-reverse items-center justify-center gap-28 xl:flex-row-reverse xl:justify-between"
-  >
-    <div class="relative hidden w-full max-w-md xl:block">
+<header class="mt-20 overflow-hidden pt-24 md:pt-32">
+  <figure class="shell grid gap-12 lg:grid-cols-2 lg:items-center">
+    <div class="relative hidden lg:col-start-2 lg:row-start-1 lg:block">
       <Iso
         class="animate-draw stroke-primary absolute inset-0 [stroke-dasharray:1000]"
       />
@@ -23,17 +21,17 @@ import { Typography } from "../ui/typography"
       />
     </div>
     <figcaption
-      class="space-y-6 text-center sm:max-w-lg md:max-w-xl xl:text-left"
+      class="space-y-6 text-center lg:col-start-1 lg:row-start-1 lg:text-left"
     >
       <Typography variant="h1">
         {PROFILE.title}{" "}
         <span class="text-primary">for the AI Era</span>
       </Typography>
-      <Typography variant="p">
+      <Typography variant="p" className="mx-auto lg:mx-0">
         {PROFILE.bio}
       </Typography>
       <div
-        class="flex flex-wrap items-center justify-center gap-2 xl:justify-start"
+        class="flex flex-wrap items-center justify-center gap-2 lg:justify-start"
       >
         <ContactButton />
         <SocialLinks />

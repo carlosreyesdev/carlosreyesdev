@@ -99,9 +99,9 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
   type="article"
   image={{ src: cover, alt: coverAlt }}
 >
-  <main class="shell mt-20 space-y-12 py-20">
+  <main class="shell mt-20 space-y-12 py-24 md:py-32">
     <Breadcrumb>
-      <BreadcrumbList>
+      <BreadcrumbList className="justify-center lg:justify-start">
         {
           breadcrumbs.map(({ name: crumb, path }, index) =>
             index < breadcrumbs.length - 1 ? (
@@ -123,18 +123,18 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
       </BreadcrumbList>
     </Breadcrumb>
     <article class="space-y-12" aria-labelledby="project-title">
-      <header class="space-y-6">
-        <div class="flex items-center gap-4">
+      <header class="space-y-6 text-center lg:text-left">
+        <div class="flex items-center justify-center gap-4 lg:justify-start">
           {icon && <Image src={icon} alt="" class="size-12 shrink-0" />}
           <ProjectStatusBadge status={status} />
         </div>
         <Typography variant="h1" id="project-title">{name}</Typography>
-        <Typography variant="p" className="max-w-3xl text-balance">
+        <Typography variant="p" className="mx-auto text-pretty lg:mx-0">
           {summary}
         </Typography>
         {
           ((url && status === "live") || archiveUrl) && (
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap justify-center gap-2 lg:justify-start">
               {url && status === "live" && (
                 <a
                   href={url}
@@ -221,8 +221,12 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
       </div>
       {
         gallery.length > 0 && (
-          <section aria-labelledby="gallery-title" class="space-y-8">
-            <Typography variant="h2" id="gallery-title">
+          <section aria-labelledby="gallery-title" class="space-y-12">
+            <Typography
+              variant="h2"
+              id="gallery-title"
+              className="text-center lg:text-left"
+            >
               Project <span class="text-primary">Gallery</span>
             </Typography>
             <ul role="list" class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -251,13 +255,15 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
     </article>
     <section
       aria-labelledby="project-cta-title"
-      class="flex flex-col items-center gap-6 border px-8 py-6 text-center md:flex-row md:justify-between md:text-left"
+      class="flex flex-col items-center gap-6 border px-8 py-6 text-center lg:flex-row lg:justify-between lg:text-left"
     >
       <hgroup class="space-y-2">
         <Typography variant="h4" as="h2" id="project-cta-title">
           Have a Project <span class="text-primary">Like This</span> in Mind?
         </Typography>
-        <Typography variant="p">Let's talk about how I can help.</Typography>
+        <Typography variant="p" className="mx-auto lg:mx-0">
+          Let's talk about how I can help.
+        </Typography>
       </hgroup>
       <ContactButton />
     </section>

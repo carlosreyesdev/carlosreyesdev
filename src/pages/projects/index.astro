@@ -46,12 +46,14 @@ const breadcrumbJsonLd = getBreadcrumbSchema(
 ---
 
 <RootLayout title={pageTitle} description={pageDescription}>
-  <main class="shell mt-20 space-y-8 py-20">
-    <hgroup class="mx-auto max-w-3xl space-y-4 text-center">
+  <main class="shell mt-20 space-y-12 py-24 md:py-32">
+    <hgroup
+      class="mx-auto max-w-3xl space-y-6 text-center lg:mx-0 lg:text-left"
+    >
       <Typography variant="h1">
         All <span class="text-primary">Projects</span>
       </Typography>
-      <Typography variant="p" className="text-balance">
+      <Typography variant="p" className="mx-auto text-pretty lg:mx-0">
         Everything I've built, including the projects that were discontinued or
         replaced along the way.
       </Typography>
@@ -93,7 +95,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(
                       {name}
                     </a>
                   </Typography>
-                  <Typography variant="p" className="max-w-lg flex-1">
+                  <Typography variant="p" className="flex-1">
                     {summary}
                   </Typography>
                   <ProjectStack stack={stack} class="mt-2" />

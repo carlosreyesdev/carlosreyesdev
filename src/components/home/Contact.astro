@@ -9,11 +9,11 @@ import { Typography } from "../ui/typography"
 ---
 
 <section
-  class="shell grid grid-cols-1 gap-8 py-20 md:grid-cols-2"
+  class="shell grid grid-cols-1 gap-12 lg:grid-cols-2"
   aria-labelledby="contact"
 >
   <hgroup
-    class="flex max-w-3xl flex-col gap-y-4 text-center text-balance md:text-left"
+    class="mx-auto flex max-w-3xl flex-col items-center gap-y-6 text-center text-pretty lg:mx-0 lg:items-start lg:text-left"
   >
     <Typography variant="h2" id="contact"
       >Got an Idea? <span class="text-primary">Let's Ship It</span></Typography
@@ -22,10 +22,10 @@ import { Typography } from "../ui/typography"
       Whether you're a founder with a product to launch or a small team that
       needs to move faster, I'd love to hear about it.
     </Typography>
-    <SocialLinks class="mx-auto md:mx-0" />
+    <SocialLinks />
   </hgroup>
   <address
-    class="relative h-min font-mono not-italic sm:border sm:px-8 sm:py-6 lg:text-lg"
+    class="relative mx-auto h-min w-full max-w-lg text-center font-mono not-italic sm:border sm:px-8 sm:py-6 sm:text-left lg:mx-0 lg:max-w-none lg:text-lg"
   >
     {PROFILE.name}
     <br />

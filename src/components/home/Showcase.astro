@@ -40,12 +40,12 @@ const SPAN_CLASSES: Record<number, string> = {
 const spans = getBentoSpans(projects.length)
 ---
 
-<section class="shell space-y-8" aria-labelledby="showcase">
-  <hgroup class="mx-auto max-w-3xl space-y-4 text-center">
+<section class="shell space-y-12" aria-labelledby="showcase">
+  <hgroup class="mx-auto max-w-3xl space-y-6 text-center lg:mx-0 lg:text-left">
     <Typography variant="h2" id="showcase">
       Featured <span class="text-primary">Projects</span>
     </Typography>
-    <Typography variant="p" className="text-balance">
+    <Typography variant="p" className="mx-auto text-pretty lg:mx-0">
       Real products for real clients, from marketing sites to full platforms.
     </Typography>
   </hgroup>
@@ -79,7 +79,7 @@ const spans = getBentoSpans(projects.length)
       })
     }
   </BentoGrid>
-  <div class="flex justify-center">
+  <div class="flex justify-center lg:justify-start">
     <a href="/projects" class={cn(buttonVariants({ variant: "outline" }))}>
       View all projects
       <ArrowRight aria-hidden className="size-5" />
