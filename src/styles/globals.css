@@ -157,7 +157,8 @@
   }
 
   html {
-    @apply scroll-smooth antialiased;
+    /* Keeps anchors and focused elements clear of the fixed navbar */
+    @apply scroll-pt-20 scroll-smooth antialiased motion-reduce:scroll-auto;
   }
 
   body {

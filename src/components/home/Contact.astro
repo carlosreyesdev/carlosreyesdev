@@ -12,43 +12,52 @@ import { Typography } from "../ui/typography"
   class="shell grid grid-cols-1 gap-12 lg:grid-cols-2"
   aria-labelledby="contact"
 >
-  <hgroup
+  <div
     class="mx-auto flex max-w-3xl flex-col items-center gap-y-6 text-center text-pretty lg:mx-0 lg:items-start lg:text-left"
   >
-    <Typography variant="h2" id="contact"
-      >Got an Idea? <span class="text-primary">Let's Ship It</span></Typography
-    >
-    <Typography variant="p">
-      Whether you're a founder with a product to launch or a small team that
-      needs to move faster, I'd love to hear about it.
-    </Typography>
+    <hgroup class="flex flex-col items-center gap-y-6 lg:items-start">
+      <Typography variant="h2" id="contact"
+        >Got a Web Product Idea? <span class="text-primary">Let's Ship It</span
+        ></Typography
+      >
+      <Typography variant="p">
+        Whether you're a founder with a product to launch or a small team that
+        needs to move faster, I'd love to hear about it.
+      </Typography>
+    </hgroup>
     <SocialLinks />
-  </hgroup>
-  <address
-    class="relative mx-auto h-min w-full max-w-lg text-center font-mono not-italic sm:border sm:px-8 sm:py-6 sm:text-left lg:mx-0 lg:max-w-none lg:text-lg"
+  </div>
+  <div
+    class="relative mx-auto h-min w-full max-w-lg text-center font-mono sm:border sm:px-8 sm:py-6 sm:text-left lg:mx-0 lg:max-w-none lg:text-lg"
   >
-    {PROFILE.name}
-    <br />
-    {PROFILE.title}
-    <br />
-    <div class="text-muted-foreground">
+    <p>{PROFILE.name}</p>
+    <p>{PROFILE.title}</p>
+    <!-- A joke address, hidden so it isn't read out as a real one -->
+    <p class="text-muted-foreground" aria-hidden="true">
       404 Not Found Lane, <br />
       CSS Grid City, JS 12345, <br />
-      The Internet <br />
-    </div>
+      The Internet
+    </p>
     <Separator className="my-2" />
-    Email: <span class="text-primary font-medium whitespace-nowrap"
-      >{PROFILE.email}</span
-    >
-    <br />
-    WhatsApp: <Anchor
-      href={`https://wa.me/${parsePhoneNumber(PROFILE.phone)}`}
-      className="whitespace-nowrap">{PROFILE.phone}</Anchor
-    >
-    <br />
-    Website: <Anchor href={PROFILE.website} className="whitespace-nowrap"
-      >{new URL(PROFILE.website).hostname}</Anchor
-    >
+    <address class="not-italic">
+      <p>
+        Email: <Anchor
+          href={`mailto:${PROFILE.email}`}
+          className="whitespace-nowrap">{PROFILE.email}</Anchor
+        >
+      </p>
+      <p>
+        WhatsApp: <Anchor
+          href={`https://wa.me/${parsePhoneNumber(PROFILE.phone)}`}
+          className="whitespace-nowrap">{PROFILE.phone}</Anchor
+        >
+      </p>
+      <p>
+        Website: <Anchor href={PROFILE.website} className="whitespace-nowrap"
+          >{new URL(PROFILE.website).hostname}</Anchor
+        >
+      </p>
+    </address>
     <Iso class="fill-primary absolute top-6 right-6 hidden w-8 sm:block" />
-  </address>
+  </div>
 </section>

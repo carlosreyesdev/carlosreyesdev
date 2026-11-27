@@ -9,7 +9,7 @@ import { getPersonSchema } from "@/lib/structured-data"
 import type { ProfilePage, WithContext } from "schema-dts"
 
 const pageTitle = `${PROFILE.name} - ${PROFILE.title}`
-const pageDescription = PROFILE.bio
+const pageDescription = `${PROFILE.name} is a ${PROFILE.title} from ${PROFILE.country} who designs and builds web products end to end, using AI agents to ship faster without cutting corners.`
 
 const jsonLd: WithContext<ProfilePage> = {
   "@context": "https://schema.org",
@@ -22,8 +22,8 @@ const jsonLd: WithContext<ProfilePage> = {
 ---
 
 <RootLayout title={pageTitle} description={pageDescription}>
-  <Hero />
-  <main class="flex flex-col gap-y-24 py-24 md:gap-y-32 md:py-32">
+  <main id="main" class="flex flex-col gap-y-24 pb-24 md:gap-y-32 md:pb-32">
+    <Hero />
     <Showcase />
     <About />
     <Contact />

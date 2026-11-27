@@ -23,7 +23,7 @@ export function hasProjectStory(project: Project) {
 }
 
 export function getProjectHref(project: Project) {
-  return `/projects/${project.id}`
+  return `/projects/${project.id}/`
 }
 
 const yearFormatter = new Intl.DateTimeFormat("en", {

@@ -1,5 +1,6 @@
 import type { ComponentProps } from "react"
-import { cn } from "../../lib/utils"
+import { cn, isExternalHref } from "../../lib/utils"
+import { NewTabHint } from "../new-tab-hint"
 import { Anchor } from "../ui/anchor"
 import { Checkbox } from "../ui/checkbox"
 import { Separator } from "../ui/separator"
@@ -81,25 +82,33 @@ export const projectContentComponents = {
       {...props}
     />
   ),
-  // Task list items are read-only, so the checkbox only reflects their state
+  // Task list items are read-only, so the checkbox is only a visual cue and
+  // screen readers get the state as text before the item instead
   input: ({ type, checked, ...props }: ComponentProps<"input">) =>
     type === "checkbox" ? (
-      <Checkbox
-        checked={checked}
-        disabled
-        className="rounded-none disabled:cursor-default disabled:opacity-100"
-      />
+      <>
+        <Checkbox
+          checked={checked}
+          disabled
+          aria-hidden="true"
+          className="rounded-none disabled:cursor-default disabled:opacity-100"
+        />
+        <span className="sr-only">{checked ? "Done:" : "Pending:"}</span>
+      </>
     ) : (
       <input type={type} checked={checked} {...props} />
     ),
-  a: (props: ComponentProps<"a">) => {
-    const external = props.href?.startsWith("http")
+  a: ({ children, ...props }: ComponentProps<"a">) => {
+    const external = isExternalHref(props.href)
     return (
       <Anchor
         target={external ? "_blank" : undefined}
         rel={external ? "noreferrer" : undefined}
         {...props}
-      />
+      >
+        {children}
+        {external && <NewTabHint className="ml-0.5 size-[0.9em]" />}
+      </Anchor>
     )
   },
   hr: () => <Separator className="my-12" />,

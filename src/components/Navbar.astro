@@ -1,8 +1,9 @@
 ---
 import { NAVIGATION_LINKS } from "@/constants/links"
-import { ArrowUpRight } from "lucide-react"
+import { isExternalHref } from "@/lib/utils"
 import Logo from "./Logo.astro"
 import { Menu } from "./menu"
+import { NewTabHint } from "./new-tab-hint"
 import SocialLinks from "./SocialLinks.astro"
 import { Anchor } from "./ui/anchor"
 import { buttonVariants } from "./ui/button"
@@ -17,11 +18,11 @@ import { buttonVariants } from "./ui/button"
       <Logo />
       <span class="sr-only">Home</span>
     </a>
+    <!-- On mobile these links live in the drawer menu instead -->
     <ul
       role="list"
-      class="sr-only flex w-full items-center gap-x-10 sm:not-sr-only"
+      class="hidden w-full items-center justify-end gap-x-10 sm:flex"
     >
-      <li class="flex-1"></li>
       {
         NAVIGATION_LINKS.map(({ label, href, asCTA }) => (
           <li>
@@ -29,16 +30,19 @@ import { buttonVariants } from "./ui/button"
               <a href={href} class={buttonVariants({ size: "sm" })}>
                 {label}
               </a>
-            ) : (
+            ) : isExternalHref(href) ? (
               <Anchor
                 href={href}
-                target={href.includes("http") ? "_blank" : "_self"}
+                target="_blank"
+                rel="noreferrer"
                 className="no-underline hover:underline"
               >
                 {label}
-                {href.includes("http") && (
-                  <ArrowUpRight aria-hidden className="inline-block size-4" />
-                )}
+                <NewTabHint />
+              </Anchor>
+            ) : (
+              <Anchor href={href} className="no-underline hover:underline">
+                {label}
               </Anchor>
             )}
           </li>

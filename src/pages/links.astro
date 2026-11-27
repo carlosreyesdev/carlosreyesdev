@@ -4,25 +4,25 @@ import ProfileLinksList from "@/components/links/ProfileLinksList.astro"
 import { PROFILE } from "@/constants/profile"
 import RootLayout from "@/layouts/RootLayout.astro"
 import { getPersonSchema } from "@/lib/structured-data"
-import type { ProfilePage, WithContext } from "schema-dts"
+import type { WebPage, WithContext } from "schema-dts"
 
 const pageTitle = `Links - ${PROFILE.name}`
-const pageDescription =
-  "Find all my social media profiles and contact information in one place."
+const pageDescription = `All of ${PROFILE.name}' links in one place: GitHub, LinkedIn, Instagram, X, the Esquina del Código blog, email and WhatsApp.`
 
-const jsonLd: WithContext<ProfilePage> = {
+// The home page is the ProfilePage; this one is just about the same person
+const jsonLd: WithContext<WebPage> = {
   "@context": "https://schema.org",
-  "@type": "ProfilePage",
+  "@type": "WebPage",
   name: pageTitle,
   description: pageDescription,
   url: Astro.url.toString(),
-  mainEntity: getPersonSchema(Astro.site),
+  about: getPersonSchema(Astro.site),
 }
 ---
 
 <RootLayout title={pageTitle} description={pageDescription}>
-  <ProfileCard />
-  <main class="shell max-w-2xl py-4">
+  <main id="main" class="shell mt-24 max-w-2xl space-y-4 pb-4">
+    <ProfileCard />
     <ProfileLinksList />
   </main>
   <script

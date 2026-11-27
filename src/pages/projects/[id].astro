@@ -84,11 +84,11 @@ const jsonLd: WithContext<CreativeWork> = {
   creator: getPersonSchema(Astro.site),
   ...(startDate && { dateCreated: startDate.toISOString().slice(0, 10) }),
   ...(stack.length > 0 && { keywords: stack.join(", ") }),
-  ...(url && status === "live" && { sameAs: url }),
+  ...(archiveUrl && { archivedAt: archiveUrl }),
 }
 const breadcrumbs = [
   { name: "Home", path: "/" },
-  { name: "Projects", path: "/projects" },
+  { name: "Projects", path: "/projects/" },
   { name, path: pagePath },
 ]
 const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
@@ -97,10 +97,10 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
 <RootLayout
   title={pageTitle}
   description={summary}
-  type="article"
   image={{ src: cover, alt: coverAlt }}
+  noindex={!hasStory}
 >
-  <main class="shell mt-20 space-y-12 py-24 md:py-32">
+  <main id="main" class="shell mt-20 space-y-12 py-24 md:py-32">
     <Breadcrumb>
       <BreadcrumbList className="justify-center lg:justify-start">
         {
@@ -178,21 +178,19 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
           )
         }
       </header>
-      <figure>
-        <Image
-          src={cover}
-          alt={coverAlt}
-          widths={[640, 1024, 1600]}
-          sizes="(min-width: 1280px) 1216px, 100vw"
-          class="w-full border"
-          loading="eager"
-          fetchpriority="high"
-        />
-      </figure>
+      <Image
+        src={cover}
+        alt={coverAlt}
+        widths={[640, 1024, 1600]}
+        sizes="(min-width: 1280px) 1216px, 100vw"
+        class="w-full border"
+        loading="eager"
+        fetchpriority="high"
+      />
       <div class="max-w-prose space-y-12 text-lg md:text-xl">
         {
           details.length > 0 && (
-            <dl aria-label="Project details" class="flex flex-wrap gap-2">
+            <dl class="flex flex-wrap gap-2">
               {details.map(({ label, value }) => (
                 <div
                   class={cn(
@@ -220,10 +218,19 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
         </div>
         {
           stack.length > 0 && (
-            <p class="text-muted-foreground font-mono text-sm">
-              <span class="mr-2 text-xs uppercase">Built with</span>
-              <span class="text-foreground">{stack.join(" · ")}</span>
-            </p>
+            <dl class="text-muted-foreground font-mono text-sm">
+              <dt class="mr-2 inline text-xs uppercase">Built with</dt>
+              <dd class="text-foreground inline">
+                <ul role="list" class="inline">
+                  {stack.map((tool, index) => (
+                    <li class="inline">
+                      {index > 0 && <span aria-hidden="true"> · </span>}
+                      {tool}
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </dl>
           )
         }
       </div>
@@ -276,7 +283,6 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
       </hgroup>
       <ContactButton />
       <Iso
-        aria-hidden="true"
         class="animate-draw stroke-primary absolute -right-8 -bottom-16 hidden w-60 [stroke-dasharray:1000] motion-reduce:animate-none sm:block"
       />
     </section>

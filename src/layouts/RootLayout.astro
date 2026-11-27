@@ -8,6 +8,8 @@ import "@fontsource/roboto/latin-400.css"
 import "@fontsource/roboto/latin-500.css"
 import "@fontsource/roboto/latin-700.css"
 import "../styles/globals.css"
+import { buttonVariants } from "@/components/ui/button"
+import { PROFILE } from "@/constants/profile"
 import { getImage } from "astro:assets"
 
 interface Props {
@@ -15,8 +17,16 @@ interface Props {
   description: string
   type?: "website" | "article"
   image?: { src: ImageMetadata; alt: string }
+  noindex?: boolean
 }
-const { title, description, type = "website", image } = Astro.props
+const {
+  title,
+  description,
+  type = "website",
+  image,
+  noindex = false,
+} = Astro.props
+const twitterHandle = `@${PROFILE.handles.x}`
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 
@@ -50,14 +60,20 @@ if (image) {
     <meta charset="utf-8" />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <meta name="robots" content="index, follow" />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonicalURL} />
+    <meta name="author" content={PROFILE.name} />
     <!-- Viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0A0A0A" />
     <meta name="color-scheme" content="dark" />
     <!-- OpenGraph -->
+    <meta property="og:site_name" content={PROFILE.name} />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={type} />
@@ -76,21 +92,23 @@ if (image) {
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={openGraphImage.url} />
     <meta name="twitter:image:alt" content={openGraphImage.alt} />
-    <meta name="twitter:image:type" content="image/jpeg" />
-    <meta
-      name="twitter:image:width"
-      content={openGraphImage.width.toString()}
-    />
-    <meta
-      name="twitter:image:height"
-      content={openGraphImage.height.toString()}
-    />
+    <meta name="twitter:site" content={twitterHandle} />
+    <meta name="twitter:creator" content={twitterHandle} />
     <title>{title}</title>
     <meta name="description" content={description} />
     <!-- JSON-LD -->
     <slot name="json-ld" />
   </head>
   <body>
+    <a
+      href="#main"
+      class={buttonVariants({
+        className:
+          "sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-60",
+      })}
+    >
+      Skip to content
+    </a>
     <Navbar />
     <slot />
     <Footer />

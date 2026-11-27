@@ -38,14 +38,14 @@ const jsonLd: WithContext<CollectionPage> = {
 const breadcrumbJsonLd = getBreadcrumbSchema(
   [
     { name: "Home", path: "/" },
-    { name: "Projects", path: "/projects" },
+    { name: "Projects", path: "/projects/" },
   ],
   Astro.site,
 )
 ---
 
 <RootLayout title={pageTitle} description={pageDescription}>
-  <main class="shell mt-20 space-y-12 py-24 md:py-32">
+  <main id="main" class="shell mt-20 space-y-12 py-24 md:py-32">
     <hgroup
       class="mx-auto max-w-3xl space-y-6 text-center lg:mx-0 lg:text-left"
     >
@@ -82,18 +82,20 @@ const breadcrumbJsonLd = getBreadcrumbSchema(
                   />
                 </div>
                 <div class="flex flex-1 flex-col gap-y-2 px-8 py-7">
-                  <p class="text-muted-foreground font-mono text-sm uppercase">
-                    {category}
-                    {period && ` · ${period}`}
-                  </p>
-                  <Typography variant="h3" as="h2">
-                    <a
-                      href={getProjectHref(project)}
-                      class="outline-none after:absolute after:inset-0"
-                    >
-                      {name}
-                    </a>
-                  </Typography>
+                  <hgroup class="space-y-2">
+                    <p class="text-muted-foreground font-mono text-sm uppercase">
+                      {category}
+                      {period && ` · ${period}`}
+                    </p>
+                    <Typography variant="h3" as="h2">
+                      <a
+                        href={getProjectHref(project)}
+                        class="outline-none after:absolute after:inset-0"
+                      >
+                        {name}
+                      </a>
+                    </Typography>
+                  </hgroup>
                   <Typography variant="p" className="flex-1">
                     {summary}
                   </Typography>

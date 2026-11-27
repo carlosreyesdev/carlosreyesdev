@@ -16,11 +16,11 @@ import {
 export const NAVIGATION_LINKS = [
   {
     label: "Projects",
-    href: "/projects",
+    href: "/projects/",
   },
   {
     label: "Links",
-    href: "/links",
+    href: "/links/",
   },
   {
     label: "Contact Me",
@@ -99,7 +99,7 @@ export const PROFILE_LINKS: ProfileLink[] = [
     icon: Mail,
     kind: "contact",
     handle: PROFILE.email,
-    external: true,
+    external: false,
   },
   {
     name: "WhatsApp",
@@ -116,7 +116,8 @@ export const SOCIAL_LINKS = PROFILE_LINKS.filter(
   (link) => link.kind === "social",
 )
 
-// Used for JSON-LD "sameAs" property
+// Used for JSON-LD "sameAs" property: other profiles of the same person, so
+// the site itself (already the Person "url") and contact links are left out
 export const SAME_AS_LINKS = PROFILE_LINKS.filter(
-  (link) => link.kind !== "contact",
+  (link) => link.kind === "social" || link.kind === "blog",
 ).map((link) => link.link)

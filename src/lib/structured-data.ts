@@ -5,6 +5,7 @@ import type { BreadcrumbList, Person, WithContext } from "schema-dts"
 export function getPersonSchema(site: URL | undefined): Person {
   return {
     "@type": "Person",
+    "@id": new URL("/#person", site).href,
     name: PROFILE.name,
     alternateName: PROFILE.nickname,
     jobTitle: PROFILE.title,
@@ -14,8 +15,6 @@ export function getPersonSchema(site: URL | undefined): Person {
     telephone: PROFILE.phone,
     url: PROFILE.website,
     sameAs: SAME_AS_LINKS,
-    birthDate: PROFILE.birthDate,
-    gender: PROFILE.gender,
     knowsLanguage: PROFILE.languages.map((language) => language.code),
   }
 }

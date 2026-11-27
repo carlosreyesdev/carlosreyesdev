@@ -6,8 +6,6 @@ export const PROFILE = Object.freeze({
   title: "Full Stack Software Engineer",
   bio: "Hi, I'm Carlos Reyes. I design and build web products end to end, and I use AI agents to move faster without lowering the bar on craft.",
   photo: me,
-  gender: "Male",
-  birthDate: "2000-06-17",
   country: "Venezuela",
   email: "contact@carlosreyes.me",
   phone: "+58 (412) 938-0768",
@@ -17,7 +15,7 @@ export const PROFILE = Object.freeze({
     instagram: "carlosreyesdev",
     x: "carlosreyesdev_",
   },
-  website: import.meta.env.SITE,
+  website: new URL("/", import.meta.env.SITE).href,
   languages: [
     { code: "en", name: "English" },
     { code: "es", name: "Spanish" },

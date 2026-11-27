@@ -8,7 +8,7 @@ import { Typography } from "../ui/typography"
 ---
 
 <header class="mt-20 overflow-hidden pt-24 md:pt-32">
-  <figure class="shell grid gap-12 lg:grid-cols-2 lg:items-center">
+  <div class="shell grid gap-12 lg:grid-cols-2 lg:items-center">
     <div class="relative hidden lg:col-start-2 lg:row-start-1 lg:block">
       <Iso
         class="animate-draw stroke-primary absolute inset-0 [stroke-dasharray:1000]"
@@ -20,7 +20,7 @@ import { Typography } from "../ui/typography"
         loading="eager"
       />
     </div>
-    <figcaption
+    <div
       class="space-y-6 text-center lg:col-start-1 lg:row-start-1 lg:text-left"
     >
       <Typography variant="h1">
@@ -36,6 +36,6 @@ import { Typography } from "../ui/typography"
         <ContactButton />
         <SocialLinks />
       </div>
-    </figcaption>
-  </figure>
+    </div>
+  </div>
 </header>

@@ -7,8 +7,10 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import { NAVIGATION_LINKS } from "@/constants/links"
+import { isExternalHref } from "@/lib/utils"
 import { Menu as MenuIcon } from "lucide-react"
 import type { ReactNode } from "react"
+import { NewTabHint } from "./new-tab-hint"
 import { Anchor } from "./ui/anchor"
 import { Button } from "./ui/button"
 
@@ -32,25 +34,33 @@ export function Menu({ socialLinks }: MenuProps) {
           </DrawerDescription>
         </DrawerHeader>
         <div className="flex flex-col gap-y-4 p-12">
-          <ul role="list" className="flex flex-col gap-y-4">
-            {NAVIGATION_LINKS.map(({ label, href, asCTA }) => (
-              <li key={href}>
-                {asCTA ? (
-                  <Button asChild>
-                    <a href={href}>{label}</a>
-                  </Button>
-                ) : (
-                  <Anchor
-                    href={href}
-                    target={href.includes("http") ? "_blank" : "_self"}
-                    className="text-foreground text-lg no-underline hover:underline md:text-xl"
-                  >
-                    {label}
-                  </Anchor>
-                )}
-              </li>
-            ))}
-          </ul>
+          {/* The drawer renders in a portal outside the site <nav> */}
+          <nav aria-label="Main">
+            <ul role="list" className="flex flex-col gap-y-4">
+              {NAVIGATION_LINKS.map(({ label, href, asCTA }) => {
+                const external = isExternalHref(href)
+                return (
+                  <li key={href}>
+                    {asCTA ? (
+                      <Button asChild>
+                        <a href={href}>{label}</a>
+                      </Button>
+                    ) : (
+                      <Anchor
+                        href={href}
+                        target={external ? "_blank" : undefined}
+                        rel={external ? "noreferrer" : undefined}
+                        className="text-foreground text-lg no-underline hover:underline md:text-xl"
+                      >
+                        {label}
+                        {external && <NewTabHint />}
+                      </Anchor>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
+          </nav>
           {socialLinks}
         </div>
       </DrawerContent>

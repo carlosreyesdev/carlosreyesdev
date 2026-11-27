@@ -5,10 +5,10 @@ import { cn } from "../../lib/utils"
 export const typographyVariants = cva("text-foreground", {
   variants: {
     variant: {
-      h1: "scroll-m-20 font-mono text-4xl font-bold text-pretty md:text-balance md:text-5xl lg:text-6xl xl:text-7xl",
-      h2: "scroll-m-20 text-3xl font-bold text-pretty md:text-balance md:text-4xl lg:text-5xl",
-      h3: "scroll-m-20 text-2xl font-bold text-pretty md:text-balance md:text-3xl lg:text-4xl",
-      h4: "scroll-m-20 text-xl font-bold text-pretty md:text-balance md:text-2xl lg:text-3xl",
+      h1: "font-mono text-4xl font-bold text-pretty md:text-balance md:text-5xl lg:text-6xl xl:text-7xl",
+      h2: "text-3xl font-bold text-pretty md:text-balance md:text-4xl lg:text-5xl",
+      h3: "text-2xl font-bold text-pretty md:text-balance md:text-3xl lg:text-4xl",
+      h4: "text-xl font-bold text-pretty md:text-balance md:text-2xl lg:text-3xl",
       p: "max-w-prose text-lg leading-7 md:text-xl",
       blockquote: "mt-6 border-l-2 pl-6 text-lg italic md:text-xl",
       ul: "my-6 ml-6 list-disc space-y-4 text-lg md:text-xl",
