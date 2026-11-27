@@ -144,7 +144,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
           }
           <span>{name}</span>
         </Typography>
-        <Typography variant="p" className="mx-auto text-pretty lg:mx-0">
+        <Typography variant="lead" className="mx-auto text-pretty lg:mx-0">
           {summary}
         </Typography>
         {
@@ -187,7 +187,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
         loading="eager"
         fetchpriority="high"
       />
-      <div class="max-w-prose space-y-12 text-lg md:text-xl">
+      <div class="max-w-prose space-y-12 text-base md:text-lg">
         {
           details.length > 0 && (
             <dl class="flex flex-wrap gap-2">
@@ -273,11 +273,11 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
       class="relative flex flex-col items-center gap-6 overflow-hidden border px-10 py-10 text-center [box-shadow:0_-20px_80px_-20px_#ffffff1f_inset] sm:items-start sm:pr-56 sm:text-left md:px-12 md:py-12"
       data-motion-graphic
     >
-      <hgroup class="space-y-2">
+      <hgroup class="space-y-4">
         <Typography variant="h2" id="project-cta-title">
           Have a Project <span class="text-primary">Like This</span> in Mind?
         </Typography>
-        <Typography variant="p" className="mx-auto sm:mx-0">
+        <Typography variant="lead" className="mx-auto sm:mx-0">
           Let's talk about how I can help.
         </Typography>
       </hgroup>

@@ -83,7 +83,7 @@ const BentoCard = ({
           href={href}
           target={target}
           rel={target === "_blank" ? "noreferrer" : undefined}
-          className="pointer-events-auto no-underline hover:underline md:text-xl"
+          className="pointer-events-auto no-underline hover:underline md:text-lg"
         >
           {cta}
           <span className="sr-only">: {name}</span>

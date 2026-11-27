@@ -18,7 +18,7 @@ import ProjectContentImage from "./ProjectContentImage.astro"
 type ElementProps = Omit<TypographyProps, "variant">
 
 // Nested lists sit closer to their parent item than top-level lists
-const nestedList = "[li_&]:my-3"
+const nestedList = "[li_&]:my-2"
 
 // Maps the HTML produced by MDX to the site's typography components.
 // MDX does not pass the classes added by Markdown plugins (task lists,
@@ -28,7 +28,7 @@ export const projectContentComponents = {
     <Typography
       variant="h2"
       className={cn(
-        "mt-12 mb-4",
+        "mt-12 mb-4 lg:text-4xl",
         props.id === "footnote-label" && "sr-only",
         className,
       )}
@@ -76,7 +76,7 @@ export const projectContentComponents = {
   li: ({ className, ...props }: ComponentProps<"li">) => (
     <li
       className={cn(
-        "[&:has(>[role=checkbox])]:flex [&:has(>[role=checkbox])]:items-center [&:has(>[role=checkbox])]:gap-3",
+        "[&:has(>[role=checkbox])]:pl-7 [&:has(>[role=checkbox])]:-indent-7",
         className,
       )}
       {...props}
@@ -91,7 +91,7 @@ export const projectContentComponents = {
           checked={checked}
           disabled
           aria-hidden="true"
-          className="rounded-none disabled:cursor-default disabled:opacity-100"
+          className="-mt-1 mr-2 inline-grid place-content-center rounded-none indent-0 align-middle disabled:cursor-default disabled:opacity-100"
         />
         <span className="sr-only">{checked ? "Done:" : "Pending:"}</span>
       </>
@@ -114,11 +114,7 @@ export const projectContentComponents = {
   hr: () => <Separator className="my-12" />,
   img: ProjectContentImage,
   code: ({ className, ...props }: ElementProps) => (
-    <Typography
-      variant="inlineCode"
-      className={cn("text-[0.875em] font-medium md:text-[0.875em]", className)}
-      {...props}
-    />
+    <Typography variant="inlineCode" className={className} {...props} />
   ),
   // Keeps the syntax colors from Shiki but swaps its background for the
   // site's, and undoes the inline code styles on the nested <code>
