@@ -1,5 +1,4 @@
 ---
-import ProjectStack from "@/components/projects/ProjectStack.astro"
 import ProjectStatusBadge from "@/components/projects/ProjectStatusBadge.astro"
 import { Typography } from "@/components/ui/typography"
 import { PROFILE } from "@/constants/profile"
@@ -64,7 +63,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(
     >
       {
         projects.map((project) => {
-          const { name, category, summary, cover, status, stack } = project.data
+          const { name, category, summary, cover, status } = project.data
           const period = formatProjectPeriod(project.data)
           return (
             <li>
@@ -98,7 +97,6 @@ const breadcrumbJsonLd = getBreadcrumbSchema(
                   <Typography variant="p" className="flex-1">
                     {summary}
                   </Typography>
-                  <ProjectStack stack={stack} class="mt-2" />
                   <p
                     aria-hidden="true"
                     class="text-primary mt-2 font-medium underline-offset-4 group-hover:underline md:text-xl"

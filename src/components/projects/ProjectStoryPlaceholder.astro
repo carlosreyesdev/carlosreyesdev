@@ -1,175 +1,23 @@
 ---
-// Stands in for the story of a project until it is written: a draft that
-// keeps writing itself, with the cursor following every line
 import { Typography } from "../ui/typography"
 
 interface Props {
   name: string
 }
 const { name } = Astro.props
-
-const ROWS = [
-  { width: 38, heading: true },
-  { width: 94 },
-  { width: 86 },
-  { width: 91 },
-  { width: 58 },
-]
-
-// Writing speed (% of the line per second) and pauses, in seconds
-const SPEED = 55
-const START = 0.6
-const LINE_BREAK = 0.3
-const HOLD = 2.4
-const FADE = 0.5
-
-let clock = START
-const timeline = ROWS.map((row) => {
-  const start = clock
-  const end = start + row.width / SPEED
-  clock = end + LINE_BREAK
-  return { ...row, start, end }
-})
-const WRITTEN = timeline.at(-1)!.end
-const DURATION = WRITTEN + HOLD + FADE
-const at = (seconds: number) => `${((seconds / DURATION) * 100).toFixed(2)}%`
-const position = (row: number, width: number) =>
-  `left: ${width}%; top: calc(${row} * var(--story-row));`
-
-const keyframes = [
-  ...timeline.map(
-    ({ start, end }, index) => `
-      @keyframes story-line-${index} {
-        0%, ${at(start)} { transform: scaleX(0); }
-        ${at(end)}, 100% { transform: scaleX(1); }
-      }`,
-  ),
-  `@keyframes story-cursor {
-    0% { ${position(0, 0)} }
-    ${timeline
-      .map(
-        ({ start, end, width }, index) =>
-          `${at(start)} { ${position(index, 0)} } ${at(end)} { ${position(index, width)} }`,
-      )
-      .join("\n")}
-    100% { ${position(timeline.length - 1, timeline.at(-1)!.width)} }
-  }`,
-  `@keyframes story-fade {
-    0%, ${at(WRITTEN + HOLD)} { opacity: 1; }
-    100% { opacity: 0; }
-  }`,
-].join("\n")
 ---
 
-<section
-  aria-labelledby="project-story-title"
-  class="story border"
-  data-motion-graphic
-  style={{
-    "--story-duration": `${DURATION}s`,
-    "--story-rows": ROWS.length,
-    "--story-end-left": `${ROWS.at(-1)!.width}%`,
-    "--story-end-top": `calc(${ROWS.length - 1} * var(--story-row))`,
-  }}
->
-  <div
-    class="text-muted-foreground flex items-center justify-between border-b px-8 py-3 font-mono text-xs"
-    aria-hidden="true"
+<section aria-labelledby="project-story-title" class="space-y-2">
+  <p
+    class="text-muted-foreground flex items-center gap-2 font-mono text-xs uppercase"
   >
-    <span>// story.mdx</span>
-    <span class="flex items-center gap-2 uppercase">
-      <span class="bg-primary size-1.5 animate-pulse"></span>
-      Drafting
-    </span>
-  </div>
-  <div class="px-8 py-8" aria-hidden="true">
-    <div class="story-sketch relative">
-      {
-        timeline.map(({ width, heading }, index) => (
-          <div class="story-row flex items-center">
-            <div
-              class:list={[
-                "story-line origin-left",
-                heading ? "bg-primary/60 h-3" : "bg-muted-foreground/25 h-2",
-              ]}
-              style={{
-                width: `${width}%`,
-                "--story-line": `story-line-${index}`,
-              }}
-            />
-          </div>
-        ))
-      }
-      <span class="story-cursor absolute">
-        <span class="story-caret bg-primary block h-4 w-2"></span>
-      </span>
-    </div>
-  </div>
-  <hgroup class="space-y-2 border-t px-8 py-6">
-    <Typography variant="h4" as="h2" id="project-story-title">
-      The Story Is <span class="text-primary">Being Written</span>
-    </Typography>
-    <Typography variant="p" className="text-muted-foreground text-pretty">
-      I'm putting together the full story behind {name}: the context, my role,
-      the challenges and how it turned out. Check back soon.
-    </Typography>
-  </hgroup>
+    <span class="bg-primary size-1.5 motion-safe:animate-pulse"></span>
+    Drafting
+  </p>
+  <Typography variant="h2" id="project-story-title">
+    The Story Is <span class="text-primary">Being Written</span>
+  </Typography>
+  <Typography variant="p" className="text-muted-foreground text-pretty">
+    I'm putting together the full story behind {name}. Check back soon.
+  </Typography>
 </section>
-
-<style is:inline set:html={keyframes}></style>
-
-<script>
-  import "@/lib/pause-offscreen"
-</script>
-
-<style>
-  .story {
-    --story-row: 1.75rem;
-  }
-
-  .story-sketch {
-    height: calc(var(--story-rows) * var(--story-row));
-    animation: story-fade var(--story-duration) linear infinite;
-  }
-
-  .story-row {
-    height: var(--story-row);
-  }
-
-  .story-line {
-    animation-name: var(--story-line);
-    animation-duration: var(--story-duration);
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-fill-mode: both;
-  }
-
-  .story-cursor {
-    margin: calc((var(--story-row) - 1rem) / 2) 0 0 0.375rem;
-    animation: story-cursor var(--story-duration) linear infinite;
-  }
-
-  .story-caret {
-    animation: story-blink 1s steps(1) infinite;
-  }
-
-  @keyframes story-blink {
-    50% {
-      opacity: 0;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .story-sketch,
-    .story-line,
-    .story-cursor,
-    .story-caret {
-      animation: none;
-    }
-
-    .story-cursor {
-      left: var(--story-end-left);
-      top: var(--story-end-top);
-    }
-  }
-</style>
