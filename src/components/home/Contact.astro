@@ -3,9 +3,9 @@ import { PROFILE } from "@/constants/profile"
 import { parsePhoneNumber } from "@/lib/utils"
 import Iso from "../Iso.astro"
 import SocialLinks from "../SocialLinks.astro"
-import { Anchor } from "../ui/anchor"
-import { Separator } from "../ui/separator"
-import { Typography } from "../ui/typography"
+import Anchor from "../ui/Anchor.astro"
+import Separator from "../ui/Separator.astro"
+import Typography from "../ui/Typography.astro"
 ---
 
 <section
@@ -38,22 +38,22 @@ import { Typography } from "../ui/typography"
       CSS Grid City, JS 12345, <br />
       The Internet
     </p>
-    <Separator className="my-2" />
+    <Separator class="my-2" />
     <address class="not-italic">
       <p>
         Email: <Anchor
           href={`mailto:${PROFILE.email}`}
-          className="whitespace-nowrap">{PROFILE.email}</Anchor
+          class="whitespace-nowrap">{PROFILE.email}</Anchor
         >
       </p>
       <p>
         WhatsApp: <Anchor
           href={`https://wa.me/${parsePhoneNumber(PROFILE.phone)}`}
-          className="whitespace-nowrap">{PROFILE.phone}</Anchor
+          class="whitespace-nowrap">{PROFILE.phone}</Anchor
         >
       </p>
       <p>
-        Website: <Anchor href={PROFILE.website} className="whitespace-nowrap"
+        Website: <Anchor href={PROFILE.website} class="whitespace-nowrap"
           >{new URL(PROFILE.website).hostname}</Anchor
         >
       </p>

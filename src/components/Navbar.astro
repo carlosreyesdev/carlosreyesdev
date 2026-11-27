@@ -2,10 +2,10 @@
 import { NAVIGATION_LINKS } from "@/constants/links"
 import { isExternalHref } from "@/lib/utils"
 import Logo from "./Logo.astro"
-import { Menu } from "./menu"
-import { NewTabHint } from "./new-tab-hint"
+import Menu from "./Menu.astro"
+import NewTabHint from "./NewTabHint.astro"
 import SocialLinks from "./SocialLinks.astro"
-import { Anchor } from "./ui/anchor"
+import Anchor from "./ui/Anchor.astro"
 import { buttonVariants } from "./ui/button"
 ---
 
@@ -35,13 +35,13 @@ import { buttonVariants } from "./ui/button"
                 href={href}
                 target="_blank"
                 rel="noreferrer"
-                className="no-underline hover:underline"
+                class="no-underline hover:underline"
               >
                 {label}
                 <NewTabHint />
               </Anchor>
             ) : (
-              <Anchor href={href} className="no-underline hover:underline">
+              <Anchor href={href} class="no-underline hover:underline">
                 {label}
               </Anchor>
             )}
@@ -49,7 +49,7 @@ import { buttonVariants } from "./ui/button"
         ))
       }
     </ul>
-    <Menu client:visible>
+    <Menu>
       <SocialLinks slot="socialLinks" />
     </Menu>
   </div>

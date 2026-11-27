@@ -1,0 +1,24 @@
+---
+import { cn } from "@/lib/utils"
+import { ArrowUpRight } from "@lucide/astro"
+
+interface Props {
+  /** Set to false where the link has no room for the arrow, like icon buttons */
+  icon?: boolean
+  class?: string
+}
+
+// Tells every user that a link opens in a new tab: an arrow for sighted
+// users and a hidden note for screen readers
+const { icon = true, class: className } = Astro.props
+---
+
+{
+  icon && (
+    <ArrowUpRight
+      aria-hidden="true"
+      class={cn("inline-block size-4", className)}
+    />
+  )
+}
+<span class="sr-only">(opens in a new tab)</span>

@@ -1,0 +1,17 @@
+---
+import { cn } from "@/lib/utils"
+import type { HTMLAttributes } from "astro/types"
+
+type Props = HTMLAttributes<"li">
+const { class: className, ...props } = Astro.props
+---
+
+<li
+  class={cn(
+    "[&:has(>[data-task-checkbox])]:pl-7 [&:has(>[data-task-checkbox])]:-indent-7",
+    className,
+  )}
+  {...props}
+>
+  <slot />
+</li>

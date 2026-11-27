@@ -3,16 +3,10 @@ import ContactButton from "@/components/ContactButton.astro"
 import Iso from "@/components/Iso.astro"
 import ProjectStoryPlaceholder from "@/components/projects/ProjectStoryPlaceholder.astro"
 import { projectContentComponents } from "@/components/projects/project-content-components"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+import Breadcrumb from "@/components/ui/Breadcrumb.astro"
+import Typography from "@/components/ui/Typography.astro"
 import { badgeVariants } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
-import { Typography } from "@/components/ui/typography"
 import { PROFILE } from "@/constants/profile"
 import RootLayout from "@/layouts/RootLayout.astro"
 import {
@@ -25,10 +19,10 @@ import {
 } from "@/lib/projects"
 import { getBreadcrumbSchema, getPersonSchema } from "@/lib/structured-data"
 import { cn } from "@/lib/utils"
+import { Archive, ArrowUpRight } from "@lucide/astro"
 import type { GetStaticPaths } from "astro"
 import { getImage, Image } from "astro:assets"
 import { render } from "astro:content"
-import { Archive, ArrowUpRight } from "lucide-react"
 import type { CreativeWork, WithContext } from "schema-dts"
 
 export const getStaticPaths = (async () => {
@@ -101,34 +95,16 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
   noindex={!hasStory}
 >
   <main id="main" class="shell mt-20 space-y-12 py-24 md:py-32">
-    <Breadcrumb>
-      <BreadcrumbList className="justify-center lg:justify-start">
-        {
-          breadcrumbs.map(({ name: crumb, path }, index) =>
-            index < breadcrumbs.length - 1 ? (
-              <>
-                <BreadcrumbItem>
-                  <BreadcrumbLink href={path}>{crumb}</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-              </>
-            ) : (
-              <BreadcrumbItem>
-                <span aria-current="page" class="text-foreground">
-                  {crumb}
-                </span>
-              </BreadcrumbItem>
-            ),
-          )
-        }
-      </BreadcrumbList>
-    </Breadcrumb>
+    <Breadcrumb
+      items={breadcrumbs}
+      listClass="justify-center lg:justify-start"
+    />
     <article class="space-y-12" aria-labelledby="project-title">
       <header class="space-y-6 text-center lg:text-left">
         <Typography
           variant="h1"
           id="project-title"
-          className="flex items-center justify-center gap-[0.25em] lg:justify-start"
+          class="flex items-center justify-center gap-[0.25em] lg:justify-start"
         >
           {
             icon && (
@@ -144,7 +120,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
           }
           <span>{name}</span>
         </Typography>
-        <Typography variant="lead" className="mx-auto text-pretty lg:mx-0">
+        <Typography variant="lead" class="mx-auto text-pretty lg:mx-0">
           {summary}
         </Typography>
         {
@@ -159,7 +135,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
                 >
                   Visit {name}
                   <span class="sr-only">(opens in a new tab)</span>
-                  <ArrowUpRight className="size-5" />
+                  <ArrowUpRight class="size-5" />
                 </a>
               )}
               {archiveUrl && (
@@ -169,7 +145,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
                   rel="noreferrer"
                   class={buttonVariants({ variant: "outline" })}
                 >
-                  <Archive className="size-5" />
+                  <Archive class="size-5" />
                   View archived version
                   <span class="sr-only">(opens in a new tab)</span>
                 </a>
@@ -240,7 +216,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
             <Typography
               variant="h2"
               id="gallery-title"
-              className="text-center lg:text-left"
+              class="text-center lg:text-left"
             >
               Project <span class="text-primary">Gallery</span>
             </Typography>
@@ -277,7 +253,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(breadcrumbs, Astro.site)
         <Typography variant="h2" id="project-cta-title">
           Have a Project <span class="text-primary">Like This</span> in Mind?
         </Typography>
-        <Typography variant="lead" className="mx-auto sm:mx-0">
+        <Typography variant="lead" class="mx-auto sm:mx-0">
           Let's talk about how I can help.
         </Typography>
       </hgroup>

@@ -1,0 +1,19 @@
+---
+import NewTabHint from "@/components/NewTabHint.astro"
+import Anchor from "@/components/ui/Anchor.astro"
+import { isExternalHref } from "@/lib/utils"
+import type { HTMLAttributes } from "astro/types"
+
+type Props = HTMLAttributes<"a">
+const { href, ...props } = Astro.props
+const external = isExternalHref(typeof href === "string" ? href : undefined)
+---
+
+<Anchor
+  href={href}
+  target={external ? "_blank" : undefined}
+  rel={external ? "noreferrer" : undefined}
+  {...props}
+>
+  <slot />{external && <NewTabHint class="ml-0.5 size-[0.9em]" />}
+</Anchor>

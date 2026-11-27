@@ -6,8 +6,6 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "verbatimModuleSyntax": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "react"
+    "verbatimModuleSyntax": true
   }
 }

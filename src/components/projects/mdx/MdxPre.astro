@@ -1,0 +1,18 @@
+---
+import { cn } from "@/lib/utils"
+import type { HTMLAttributes } from "astro/types"
+
+type Props = HTMLAttributes<"pre">
+const { class: className, ...props } = Astro.props
+---
+
+{
+  /* Keeps the syntax colors from Shiki but swaps its background for the site's, and undoes the inline code styles on the nested <code> */
+}
+<pre
+  {...props}
+  class={cn(
+    className,
+    "bg-muted! mb-6 overflow-x-auto p-6 text-sm leading-6",
+    "[&_code]:bg-transparent [&_code]:p-0 [&_code]:text-sm [&_code]:font-normal",
+  )}><slot /></pre>

@@ -1,5 +1,5 @@
 ---
-import { Typography } from "../ui/typography"
+import Typography from "../ui/Typography.astro"
 
 interface Props {
   name: string
@@ -14,10 +14,10 @@ const { name } = Astro.props
     <span class="bg-primary size-1.5 motion-safe:animate-pulse"></span>
     Drafting
   </p>
-  <Typography variant="h2" id="project-story-title" className="lg:text-4xl">
+  <Typography variant="h2" id="project-story-title" class="lg:text-4xl">
     The Story Is <span class="text-primary">Being Written</span>
   </Typography>
-  <Typography variant="p" className="text-muted-foreground text-pretty">
+  <Typography variant="p" class="text-muted-foreground text-pretty">
     I'm putting together the full story behind {name}. Check back soon.
   </Typography>
 </section>

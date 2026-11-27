@@ -1,0 +1,11 @@
+---
+import Typography from "@/components/ui/Typography.astro"
+import type { HTMLAttributes } from "astro/types"
+
+type Props = HTMLAttributes<"code">
+const { class: className, ...props } = Astro.props
+---
+
+<Typography variant="inlineCode" class={className} {...props}>
+  <slot />
+</Typography>

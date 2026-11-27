@@ -1,5 +1,5 @@
 ---
-import { Typography } from "../ui/typography"
+import Typography from "../ui/Typography.astro"
 import EvolutionGraphic from "./graphics/EvolutionGraphic.astro"
 
 const principles = [
@@ -26,7 +26,7 @@ const principles = [
     <Typography variant="h2" id="about">
       About Me: Same Engineer, <span class="text-primary">New Tools</span>
     </Typography>
-    <Typography variant="lead" className="mx-auto lg:mx-0">
+    <Typography variant="lead" class="mx-auto lg:mx-0">
       Full Stack Software Engineer based in Venezuela, building products for
       founders and small teams since 2020. I started as a pixel-obsessed
       frontend dev and grew into the full stack. Today AI agents do much of the
@@ -45,7 +45,7 @@ const principles = [
             </span>
             <div class="space-y-1">
               <h3 class="text-lg leading-7 font-bold md:text-xl">{title}</h3>
-              <Typography variant="p" className="text-muted-foreground">
+              <Typography variant="p" class="text-muted-foreground">
                 {description}
               </Typography>
             </div>

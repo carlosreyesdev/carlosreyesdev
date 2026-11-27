@@ -1,6 +1,6 @@
 ---
 import ProjectStatusBadge from "@/components/projects/ProjectStatusBadge.astro"
-import { Typography } from "@/components/ui/typography"
+import Typography from "@/components/ui/Typography.astro"
 import { PROFILE } from "@/constants/profile"
 import RootLayout from "@/layouts/RootLayout.astro"
 import {
@@ -9,8 +9,8 @@ import {
   getProjects,
 } from "@/lib/projects"
 import { getBreadcrumbSchema, getPersonSchema } from "@/lib/structured-data"
+import { ArrowRight } from "@lucide/astro"
 import { Image } from "astro:assets"
-import { ArrowRight } from "lucide-react"
 import type { CollectionPage, WithContext } from "schema-dts"
 
 const projects = await getProjects()
@@ -52,7 +52,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(
       <Typography variant="h1">
         All <span class="text-primary">Projects</span>
       </Typography>
-      <Typography variant="lead" className="mx-auto text-pretty lg:mx-0">
+      <Typography variant="lead" class="mx-auto text-pretty lg:mx-0">
         Everything I've built, including the projects that were discontinued or
         replaced along the way.
       </Typography>
@@ -96,7 +96,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(
                       </a>
                     </Typography>
                   </hgroup>
-                  <Typography variant="p" className="flex-1">
+                  <Typography variant="p" class="flex-1">
                     {summary}
                   </Typography>
                   <p
@@ -104,7 +104,7 @@ const breadcrumbJsonLd = getBreadcrumbSchema(
                     class="text-primary mt-2 font-medium underline-offset-4 group-hover:underline md:text-lg"
                   >
                     View project
-                    <ArrowRight className="ml-1 inline-block size-5" />
+                    <ArrowRight class="ml-1 inline-block size-5" />
                   </p>
                 </div>
               </article>

@@ -1,16 +1,16 @@
-import { XLogo } from "@/components/icons/x-logo"
+import GithubLogo from "@/components/icons/GithubLogo.astro"
+import InstagramLogo from "@/components/icons/InstagramLogo.astro"
+import LinkedinLogo from "@/components/icons/LinkedinLogo.astro"
+import XLogo from "@/components/icons/XLogo.astro"
 import { PROFILE } from "@/constants/profile"
 import { parsePhoneNumber } from "@/lib/utils"
 import {
-  Github,
   Globe,
-  Instagram,
-  Linkedin,
   Mail,
   MessageCircle,
   Rss,
-  type LucideIcon,
-} from "lucide-react"
+  type AstroComponent,
+} from "@lucide/astro"
 
 // Main navigation links for the site
 export const NAVIGATION_LINKS = [
@@ -34,7 +34,7 @@ type ProfileLinkKind = "social" | "website" | "blog" | "contact"
 export interface ProfileLink {
   name: string
   link: string
-  icon: LucideIcon | typeof XLogo
+  icon: AstroComponent | typeof XLogo
   kind: ProfileLinkKind
   handle?: string
   subtitle?: string
@@ -64,7 +64,7 @@ export const PROFILE_LINKS: ProfileLink[] = [
   {
     name: "GitHub",
     link: `https://github.com/${PROFILE.handles.github}`,
-    icon: Github,
+    icon: GithubLogo,
     kind: "social",
     handle: formatHandle(PROFILE.handles.github),
     external: true,
@@ -72,7 +72,7 @@ export const PROFILE_LINKS: ProfileLink[] = [
   {
     name: "LinkedIn",
     link: `https://www.linkedin.com/in/${PROFILE.handles.linkedin}`,
-    icon: Linkedin,
+    icon: LinkedinLogo,
     kind: "social",
     handle: formatHandle(PROFILE.handles.linkedin),
     external: true,
@@ -80,7 +80,7 @@ export const PROFILE_LINKS: ProfileLink[] = [
   {
     name: "Instagram",
     link: `https://www.instagram.com/${PROFILE.handles.instagram}`,
-    icon: Instagram,
+    icon: InstagramLogo,
     kind: "social",
     handle: formatHandle(PROFILE.handles.instagram),
     external: true,

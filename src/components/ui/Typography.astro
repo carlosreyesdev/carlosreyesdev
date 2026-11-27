@@ -1,0 +1,21 @@
+---
+import { cn } from "@/lib/utils"
+import type { HTMLAttributes, HTMLTag } from "astro/types"
+import {
+  typographyElementMap,
+  typographyVariants,
+  type TypographyVariantProps,
+} from "./typography"
+
+interface Props extends HTMLAttributes<"div">, TypographyVariantProps {
+  as?: HTMLTag
+}
+
+const { variant, as, class: className, ...props } = Astro.props
+const Tag: HTMLTag =
+  as ?? (variant ? typographyElementMap[variant] : undefined) ?? "div"
+---
+
+<Tag class={cn(typographyVariants({ variant }), className)} {...props}>
+  <slot />
+</Tag>

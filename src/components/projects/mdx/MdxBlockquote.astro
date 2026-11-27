@@ -1,0 +1,16 @@
+---
+import Typography from "@/components/ui/Typography.astro"
+import { cn } from "@/lib/utils"
+import type { HTMLAttributes } from "astro/types"
+
+type Props = HTMLAttributes<"blockquote">
+const { class: className, ...props } = Astro.props
+---
+
+<Typography
+  variant="blockquote"
+  class={cn("mb-6 [&>p:last-child]:mb-0", className)}
+  {...props}
+>
+  <slot />
+</Typography>

@@ -1,0 +1,19 @@
+---
+import { cn } from "@/lib/utils"
+import type { HTMLAttributes } from "astro/types"
+
+type Props = HTMLAttributes<"section">
+const { class: className, ...props } = Astro.props
+---
+
+{/* Footnotes read as a quieter appendix at the end of the story */}
+<section
+  class={cn(
+    "data-footnotes:text-muted-foreground data-footnotes:mt-12 data-footnotes:border-t data-footnotes:pt-6",
+    "data-footnotes:[&_ol]:my-0 data-footnotes:[&_ol]:text-base data-footnotes:[&_p]:mb-0 data-footnotes:[&_p]:text-base",
+    className,
+  )}
+  {...props}
+>
+  <slot />
+</section>

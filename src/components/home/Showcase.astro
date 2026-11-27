@@ -2,11 +2,12 @@
 import { getProjectHref, getProjects } from "@/lib/projects"
 import { cn } from "@/lib/utils"
 import { Image, Picture } from "astro:assets"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight } from "@lucide/astro"
 import ProjectStatusBadge from "../projects/ProjectStatusBadge.astro"
-import { BentoCard, BentoGrid } from "../ui/bento-grid"
+import BentoCard from "../ui/BentoCard.astro"
+import BentoGrid from "../ui/BentoGrid.astro"
 import { buttonVariants } from "../ui/button"
-import { Typography } from "../ui/typography"
+import Typography from "../ui/Typography.astro"
 
 const projects = await getProjects({ featured: true })
 
@@ -45,7 +46,7 @@ const spans = getBentoSpans(projects.length)
     <Typography variant="h2" id="showcase">
       Featured <span class="text-primary">Projects</span>
     </Typography>
-    <Typography variant="lead" className="mx-auto text-pretty lg:mx-0">
+    <Typography variant="lead" class="mx-auto text-pretty lg:mx-0">
       Real products for real clients, from marketing sites to full platforms.
     </Typography>
   </hgroup>
@@ -60,7 +61,7 @@ const spans = getBentoSpans(projects.length)
             description={summary}
             href={getProjectHref(project)}
             cta="View project"
-            className={SPAN_CLASSES[spans[index]]}
+            class={SPAN_CLASSES[spans[index]]}
           >
             {icon ? <Image slot="icon" src={icon} alt="" /> : null}
             {status !== "live" ? (
@@ -80,7 +81,7 @@ const spans = getBentoSpans(projects.length)
   <div class="flex justify-center lg:justify-start">
     <a href="/projects/" class={cn(buttonVariants({ variant: "outline" }))}>
       View all projects
-      <ArrowRight aria-hidden className="size-5" />
+      <ArrowRight aria-hidden="true" class="size-5" />
     </a>
   </div>
 </section>

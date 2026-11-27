@@ -1,0 +1,19 @@
+---
+import Typography from "@/components/ui/Typography.astro"
+import { cn } from "@/lib/utils"
+import type { HTMLAttributes } from "astro/types"
+
+type Props = HTMLAttributes<"ul">
+const { class: className, ...props } = Astro.props
+---
+
+<Typography
+  variant="ul"
+  class={cn(
+    "[li_&]:my-2 [&:has(>li>[data-task-checkbox])]:ml-0 [&:has(>li>[data-task-checkbox])]:list-none",
+    className,
+  )}
+  {...props}
+>
+  <slot />
+</Typography>

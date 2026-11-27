@@ -1,10 +1,8 @@
-import react from "@astrojs/react"
+import mdx from "@astrojs/mdx"
 import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
 import { defineConfig } from "astro/config"
 import { readdirSync, readFileSync } from "node:fs"
-
-import mdx from "@astrojs/mdx"
 
 const PROJECTS_DIR = "./src/content/projects"
 
@@ -27,7 +25,6 @@ export default defineConfig({
       filter: (page) =>
         !projectsWithoutStory.some((id) => page.endsWith(`/projects/${id}/`)),
     }),
-    react(),
     mdx({ gfm: true }),
   ],
 })
